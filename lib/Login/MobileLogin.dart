@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flyhub/Login/Otp_Screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../CommonClass/Utils.dart';
 
 class Mobilelogin extends StatefulWidget {
   const Mobilelogin({super.key});
@@ -9,9 +13,9 @@ class Mobilelogin extends StatefulWidget {
 }
 
 class _MobileloginState extends State<Mobilelogin> {
-
   final TextEditingController _controller = TextEditingController();
   bool _isAgreed = false;
+  late SharedPreferences pref;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,6 @@ class _MobileloginState extends State<Mobilelogin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               SizedBox(height: screenHeight * 0.04),
 
               // Image at the top
@@ -40,14 +43,14 @@ class _MobileloginState extends State<Mobilelogin> {
               SizedBox(height: screenHeight * 0.03),
 
               Padding(
-                padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Login Title
                     Text(
                       'Login',
-                      style: TextStyle(
+                      style: GoogleFonts.lexend(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
@@ -58,7 +61,7 @@ class _MobileloginState extends State<Mobilelogin> {
 
                     Text(
                       'Please enter your mobile number',
-                      style: TextStyle(
+                      style: GoogleFonts.lexend(
                         fontSize: screenWidth * 0.035,
                         color: Colors.grey[700],
                       ),
@@ -69,24 +72,30 @@ class _MobileloginState extends State<Mobilelogin> {
                     // Mobile Input Field
                     TextField(
                       controller: _controller,
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: 'Mobile Number',
-                        hintText: 'eg.9876543210',
+                        hintText: 'eg.95555555',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        counterText: "",
                       ),
+                      maxLines: 1,
+                      maxLength: 10,
                     ),
 
                     SizedBox(height: screenHeight * 0.02),
 
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start, // aligns top of both checkbox and text
-                      mainAxisAlignment: MainAxisAlignment.start,   // aligns row to the left
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // aligns top of both checkbox and text
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      // aligns row to the left
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 4), // aligns checkbox slightly lower
+                          padding: const EdgeInsets.only(top: 4),
+                          // aligns checkbox slightly lower
                           child: Checkbox(
                             value: _isAgreed,
                             onChanged: (value) {
@@ -98,15 +107,18 @@ class _MobileloginState extends State<Mobilelogin> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 12), // aligns text vertically with checkbox
+                            padding: const EdgeInsets.only(top: 12),
+                            // aligns text vertically with checkbox
                             child: Text.rich(
                               TextSpan(
                                 text: 'I will Agree to our ',
-                                style: TextStyle(fontSize: screenWidth * 0.035),
+                                style: GoogleFonts.lexend(
+                                  fontSize: screenWidth * 0.035,
+                                ),
                                 children: [
                                   TextSpan(
                                     text: 'Terms & Conditions',
-                                    style: TextStyle(
+                                    style: GoogleFonts.lexend(
                                       fontWeight: FontWeight.bold,
                                       fontSize: screenWidth * 0.035,
                                     ),
@@ -114,7 +126,7 @@ class _MobileloginState extends State<Mobilelogin> {
                                   TextSpan(text: ' and '),
                                   TextSpan(
                                     text: 'Privacy Policy',
-                                    style: TextStyle(
+                                    style: GoogleFonts.lexend(
                                       fontWeight: FontWeight.bold,
                                       fontSize: screenWidth * 0.035,
                                     ),
@@ -134,9 +146,34 @@ class _MobileloginState extends State<Mobilelogin> {
                       width: double.infinity,
                       height: screenHeight * 0.07,
                       child: ElevatedButton(
-                        onPressed: _isAgreed ? () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
-                        } : null,
+                        onPressed: _isAgreed
+                            ? () async {
+                                pref = await SharedPreferences.getInstance();
+                                if (_controller.text.trim().isEmpty) {
+                                  Utils.bottomtoast(
+                                    context,
+                                    "Enter the Mobile Number",
+                                  );
+                                } else if (_controller.text.trim().length <
+                                    10) {
+                                  Utils.bottomtoast(
+                                    context,
+                                    "Enter the Valid Mobile Number",
+                                  );
+                                } else {
+                                  pref.setString(
+                                    "mobile_number",
+                                    _controller.text,
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OtpScreen(),
+                                    ),
+                                  );
+                                }
+                              }
+                            : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF7049EC),
                           disabledBackgroundColor: Colors.grey[400],
@@ -146,7 +183,7 @@ class _MobileloginState extends State<Mobilelogin> {
                         ),
                         child: Text(
                           'Continue',
-                          style: TextStyle(
+                          style: GoogleFonts.lexend(
                             fontSize: screenWidth * 0.045,
                             color: Colors.white,
                           ),
@@ -157,8 +194,7 @@ class _MobileloginState extends State<Mobilelogin> {
                     SizedBox(height: screenHeight * 0.03),
                   ],
                 ),
-              )
-
+              ),
             ],
           ),
         ),

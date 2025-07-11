@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flyhub/CommonClass/ApiClass.dart';
+import 'package:flyhub/CommonClass/Utils.dart';
 import 'package:flyhub/Login/MobileLogin.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Selectlanguage extends StatefulWidget {
   const Selectlanguage({super.key});
@@ -10,40 +14,34 @@ class Selectlanguage extends StatefulWidget {
 }
 
 class _SelectlanguageState extends State<Selectlanguage> {
-  final languages = [
-    {
-      'label': 'தமிழ்',
-      'asset': 'assets/images/tamil.svg',
-      'bg': Color(0xFFEAF3FF),
-    },
-    {
-      'label': 'English',
-      'asset': 'assets/images/tamil.svg',
-      'bg': Color(0xFFFEEEEE),
-    },
-    {
-      'label': 'ಕನ್ನಡ',
-      'asset': 'assets/images/tamil.svg',
-      'bg': Color(0xFFFFF3E7),
-    },
-    {
-      'label': 'తెలుగు',
-      'asset': 'assets/images/tamil.svg',
-      'bg': Color(0xFFEAF3F3),
-    },
-    {
-      'label': 'हिंदी',
-      'asset': 'assets/images/tamil.svg',
-      'bg': Color(0xFFFFEFEF),
-    },
-    {
-      'label': 'മലയാളം',
-      'asset': 'assets/images/tamil.svg',
-      'bg': Color(0xFFE9F2F2),
-    },
-  ];
+  final ApiClass _apiClass = ApiClass();
 
-  int selectedIndex = 1;
+  var languageList = [];
+
+  int selectedIndex = -1;
+
+  bool isInternet = true;
+
+  late SharedPreferences pref;
+
+  @override
+  void initState() {
+    super.initState();
+    getLanguage();
+  }
+
+  Future<void> getLanguage() async {
+    if (await Utils.checkInternetConnection()) {
+      isInternet = true;
+      languageList = await _apiClass.getLanguage();
+    } else {
+      isInternet = false;
+    }
+
+    setState(() {});
+
+    print('languageList : $languageList');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +52,10 @@ class _SelectlanguageState extends State<Selectlanguage> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: w * 0.07, vertical: h * 0.05),
+          padding: EdgeInsets.symmetric(
+            horizontal: w * 0.07,
+            vertical: h * 0.05,
+          ),
           child: Column(
             children: [
               // This Expanded will take all available space and center its child
@@ -66,7 +67,7 @@ class _SelectlanguageState extends State<Selectlanguage> {
                     children: [
                       Text(
                         'Choose Language',
-                        style: TextStyle(
+                        style: GoogleFonts.lexend(
                           fontSize: w * 0.055,
                           fontWeight: FontWeight.w600,
                         ),
@@ -74,82 +75,105 @@ class _SelectlanguageState extends State<Selectlanguage> {
                       SizedBox(height: h * 0.005),
                       Text(
                         'Update of preferred language for your mobile app use',
-                        style: TextStyle(
+                        style: GoogleFonts.lexend(
                           fontSize: w * 0.035,
                           color: Colors.grey,
                         ),
                       ),
                       SizedBox(height: h * 0.035),
+
                       SizedBox(
                         height: h * 0.65,
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: languages.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1.2,
-                            crossAxisSpacing: 15,
-                            mainAxisSpacing: 15,
-                          ),
-                          itemBuilder: (context, i) {
-                            final lang = languages[i];
-                            final isSel = i == selectedIndex;
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = i;
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: lang['bg'] as Color,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: isSel
-                                      ? Border.all(
-                                    color: Color(0xFF7049EC),
-                                    width: 2,
-                                  )
-                                      : null,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      lang['asset'] as String,
-                                      width: w * 0.12,
-                                      height: w * 0.12,
+                        child: languageList.isEmpty
+                            ? Center(child: CircularProgressIndicator())
+                            : !isInternet
+                            ? Center(child: CircularProgressIndicator())
+                            : GridView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemCount: languageList.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 1.2,
+                                      crossAxisSpacing: 15,
+                                      mainAxisSpacing: 15,
                                     ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      lang['label'] as String,
-                                      style: TextStyle(
-                                        fontSize: w * 0.038,
-                                        fontWeight: FontWeight.w500,
+                                itemBuilder: (context, i) {
+                                  final lang = languageList[i];
+                                  final isSel = i == selectedIndex;
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      pref =
+                                          await SharedPreferences.getInstance();
+                                      pref.setInt("langId", lang['id']);
+
+                                      setState(() {
+                                        selectedIndex = i;
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFE7F3EF),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: isSel
+                                            ? Border.all(
+                                                color: Color(0xFF7049EC),
+                                                width: 2,
+                                              )
+                                            : null,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.network(
+                                            lang['img'],
+                                            width: w * 0.12,
+                                            height: w * 0.12,
+                                            placeholderBuilder: (context) =>
+                                                CircularProgressIndicator(),
+                                            fit: BoxFit.contain,
+                                            //semanticsLabel: lang['label'],
+                                            clipBehavior: Clip.antiAlias,
+                                          ),
+
+                                          SizedBox(height: 8),
+
+                                          Text(
+                                            lang['name'],
+                                            style: GoogleFonts.lexend(
+                                              fontSize: w * 0.038,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                     ],
                   ),
                 ),
               ),
+
               // Button stays at the bottom
               SizedBox(
                 width: double.infinity,
                 height: h * 0.065,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Mobilelogin()),
-                    );
+                    if (selectedIndex >= 0) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Mobilelogin()),
+                      );
+                    } else {
+                      Utils.bottomtoast(context, "Choose Your Language");
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7049EC),
@@ -159,7 +183,7 @@ class _SelectlanguageState extends State<Selectlanguage> {
                   ),
                   child: Text(
                     'Continue in English',
-                    style: TextStyle(
+                    style: GoogleFonts.lexend(
                       fontSize: w * 0.045,
                       color: Colors.white,
                     ),
@@ -171,6 +195,5 @@ class _SelectlanguageState extends State<Selectlanguage> {
         ),
       ),
     );
-
   }
 }

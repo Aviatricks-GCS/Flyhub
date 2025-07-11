@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyhub/Login/Otp_Screen.dart';
 
 class Mobilelogin extends StatefulWidget {
   const Mobilelogin({super.key});
@@ -133,7 +134,9 @@ class _MobileloginState extends State<Mobilelogin> {
                       width: double.infinity,
                       height: screenHeight * 0.07,
                       child: ElevatedButton(
-                        onPressed: _isAgreed ? () {} : null,
+                        onPressed: _isAgreed ? () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
+                        } : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF7049EC),
                           disabledBackgroundColor: Colors.grey[400],

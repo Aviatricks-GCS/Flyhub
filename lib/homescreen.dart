@@ -1,34 +1,45 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import 'CommonClass/Utils.dart';
 import 'buildPilotTile.dart';
 import 'category_tile.dart';
 import 'drone_card.dart';
 import 'drone_model.dart';
+import 'package:http/http.dart' as http;
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-class HomeScreen extends StatelessWidget {
+class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final List<Map<String, dynamic>> categories = [
-    {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
-    {"icon": Icons.settings, "label": "parts & accessories"},
-    {"icon": Icons.person, "label": "Hire Pilots"},
-    {"icon": Icons.build, "label": "Drone Services"},
-    {"icon": Icons.school, "label": "Training"},
-    {"icon": Icons.support, "label": "Maintenance"},
-    {"icon": Icons.work, "label": "Jobs Portal"},
-    {"icon": Icons.rule, "label": "Regulatory"},
+
+  @override
+  void initState() {
+    super.initState();
+    gethomedata();
+  }
+
+  var categories = [
+    // {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
+    // {"icon": Icons.settings, "label": "parts & accessories"},
+    // {"icon": Icons.person, "label": "Hire Pilots"},
+    // {"icon": Icons.build, "label": "Drone Services"},
+    // {"icon": Icons.school, "label": "Training"},
+    // {"icon": Icons.support, "label": "Maintenance"},
+    // {"icon": Icons.work, "label": "Jobs Portal"},
+    // {"icon": Icons.rule, "label": "Regulatory"},
   ];
 
   final List<DroneModel> featuredDrones = [
     DroneModel(name: "DJI Mavic 3 Pro", price: "25500", image: "assets/images/MaskGroup34@2x.png", rating: 4.5),
     DroneModel(name: "Autel EVO Lite+", price: "12000", image: "assets/images/MaskGroup38@2x.png", rating: 4.0),
   ];
-  void _onTabTapped(int index) {
-    // setState(() {
-    //   _selectedIndex = index;
-    // });
-    // You can implement screen switching here.
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,9 +94,10 @@ class HomeScreen extends StatelessWidget {
             GridView.count(
               padding: EdgeInsets.all(16),
               crossAxisCount: 4,
+              childAspectRatio: 0.7,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              children: categories.map((c) => CategoryTile(icon: c['icon'], label: c['label'])).toList(),
+              children: categories.map((c) => CategoryTile(icon: c['image'], label: c['cname'])).toList(),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -103,7 +115,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Text("Featured Drones", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
-            SizedBox(
+            SizedBox (
               height: 220,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -336,20 +348,45 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Market'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_pin), label: 'Pilot'),
-          BottomNavigationBarItem(icon: Icon(Icons.car_rental), label: 'Rentals'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-      ),
-    );
+      );
   }
+
+  Future<dynamic> gethomedata() async {
+    print('Request data from getFavData ');
+
+    var _body = {
+      "action": "getHomeCat",
+      "lang": "1"
+    };
+
+    var response = await http.post(Uri.parse(Utils.liveLocal_Url), body: _body);
+
+    print('Request data from getFavData $_body');
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      print('Response: $data');
+
+      setState(() {
+        categories = data;
+      });
+      String toastMessage = "data";
+      Fluttertoast.showToast(
+        msg: toastMessage,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+
+    } else {
+      print(
+          'Failed to load data. Server responded with status code: ${response.statusCode}');
+      throw Exception("Failed to load data for Internal Server Error");
+    }
+  }
+
 }

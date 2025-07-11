@@ -18,7 +18,7 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
 
-    _timer = Timer(Duration(milliseconds: 5000), () async {
+    _timer = Timer(Duration(milliseconds: 3000), () async {
       if (!mounted) return;
       //bool isFirstLaunch = pref.getBool('isFirstLaunch') ?? true;
       navigateToNextPage();

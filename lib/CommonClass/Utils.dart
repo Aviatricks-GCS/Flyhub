@@ -112,14 +112,6 @@ class Utils{
     return device_platform;
   }
 
-  static bool isInteger(String value) {
-    try {
-      int.parse(value);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 
   static Future<String> getDeviceModel(BuildContext context) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

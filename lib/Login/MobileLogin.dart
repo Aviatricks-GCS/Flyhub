@@ -3,6 +3,7 @@ import 'package:flyhub/Login/Otp_Screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../CommonClass/ApiClass.dart';
 import '../CommonClass/Utils.dart';
 
 class Mobilelogin extends StatefulWidget {
@@ -16,6 +17,13 @@ class _MobileloginState extends State<Mobilelogin> {
   final TextEditingController _controller = TextEditingController();
   bool _isAgreed = false;
   late SharedPreferences pref;
+
+  final ApiClass _apiClass = ApiClass();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +157,7 @@ class _MobileloginState extends State<Mobilelogin> {
                         onPressed: _isAgreed
                             ? () async {
                                 pref = await SharedPreferences.getInstance();
+                                var response;
                                 if (_controller.text.trim().isEmpty) {
                                   Utils.bottomtoast(
                                     context,
@@ -161,16 +170,33 @@ class _MobileloginState extends State<Mobilelogin> {
                                     "Enter the Valid Mobile Number",
                                   );
                                 } else {
-                                  pref.setString(
-                                    "mobile_number",
-                                    _controller.text,
-                                  );
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => OtpScreen(),
-                                    ),
-                                  );
+                                  pref.setString("mobile_number", _controller.text);
+
+                                  if (await Utils.checkInternetConnection()) {
+                                    response = await _apiClass.getOtp(_controller.text,);
+
+                                    if (response[0]["status"] == "success") {
+
+                                      pref.setString(
+                                        "userId",
+                                        response[0]["userid"].toString(),
+                                      );
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => OtpScreen(),
+                                        ),
+                                      );
+                                    } else {
+                                      print('Response Not Success');
+                                    }
+                                  } else {
+                                    Utils.bottomtoast(
+                                      context,
+                                      "Check Your Internet Connection",
+                                    );
+                                  }
                                 }
                               }
                             : null,

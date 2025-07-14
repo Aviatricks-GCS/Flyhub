@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -118,6 +120,30 @@ class ApiClass {
       print("Exception occurred in getLanguage: $e");
     }
 
+    return responseData;
+  }
+
+
+  Future<dynamic> gethomedata() async {
+    print('Request data from getFavData ');
+    var responseData;
+    var _body = {
+      "action": "homeRequest",
+      "lang": pref.getInt("langId")
+    };
+
+    var response = await http.post(Uri.parse(Utils.liveLocal_Url), body: _body);
+
+    print('Request data from getFavData $_body');
+
+    if (response.statusCode == 200) {
+      final responseBody = response.body;
+      responseData = json.decode(responseBody);
+    } else {
+      print(
+          'Failed to load data. Server responded with status code: ${response.statusCode}');
+      throw Exception("Failed to load data for Internal Server Error");
+    }
     return responseData;
   }
 

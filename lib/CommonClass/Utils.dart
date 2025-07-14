@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Utils{
+  static String liveLocal_Url="https://flyhub.nithra.mobi/api/flyRequest";
 
   static var apiUrl = 'https://flyhub.nithra.mobi/api/flyRequest';
 

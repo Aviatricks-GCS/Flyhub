@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flyhub/HomeScreen.dart';
 import 'package:flyhub/Login/SelectLanguage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Dynamichome.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -24,6 +25,7 @@ class _SplashscreenState extends State<Splashscreen> {
 
     _timer = Timer(Duration(milliseconds: 3000), () async {
       if (!mounted) return;
+      //bool isFirstLaunch = pref.getBool('isFirstLaunch') ?? true;
       navigateToNextPage();
     });
 

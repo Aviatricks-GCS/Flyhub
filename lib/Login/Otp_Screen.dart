@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../CommonClass/ApiClass.dart';
 import '../CommonClass/Utils.dart';
+import '../Dynamichome.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -253,7 +254,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => HomeScreen(),
+                                          builder: (context) => dynamichome(),
                                         ),
                                       );
                                     } else {

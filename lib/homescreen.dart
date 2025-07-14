@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'CommonClass/ApiClass.dart';
 import 'CommonClass/Utils.dart';
+import 'RegisterPage.dart';
 import 'buildPilotTile.dart';
 import 'category_tile.dart';
 import 'package:http/http.dart' as http;
@@ -35,7 +36,18 @@ class _HomeScreenState extends State<HomeScreen> {
   var icon1="";
   var icon2="";
   var textdata="";
+  var Register_title="";
   var categories = [
+    // {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
+    // {"icon": Icons.settings, "label": "parts & accessories"},
+    // {"icon": Icons.person, "label": "Hire Pilots"},
+    // {"icon": Icons.build, "label": "Drone Services"},
+    // {"icon": Icons.school, "label": "Training"},
+    // {"icon": Icons.support, "label": "Maintenance"},
+    // {"icon": Icons.work, "label": "Jobs Portal"},
+    // {"icon": Icons.rule, "label": "Regulatory"},
+  ];
+  var Registerlist = [
     // {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
     // {"icon": Icons.settings, "label": "parts & accessories"},
     // {"icon": Icons.person, "label": "Hire Pilots"},
@@ -115,7 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegisterPage(registerList: Registerlist.cast<Map<String, dynamic>>(),title:Register_title),
+                    ),
+                  );
+                },
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -128,12 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(width: 8),
                     Text(
                       textdata,
-                      maxLines: 2,
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-
                       ),
                     ),
                     SizedBox(width: 8),
@@ -411,6 +429,8 @@ class _HomeScreenState extends State<HomeScreen> {
            icon1=currentItem['right_img'];
            icon2=currentItem['left_img'];
            textdata=currentItem['title'];
+           Register_title=currentItem['form_title'];
+           Registerlist=currentItem['items'];
            print('Response: ${currentItem['right_img']}');
            print('Response: ${currentItem['left_img']}');
            print('Response: ${currentItem['items']}');

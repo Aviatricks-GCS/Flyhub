@@ -13,6 +13,8 @@ import 'package:http/http.dart' as http;
 
 import 'drone_card.dart';
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }

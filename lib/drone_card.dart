@@ -27,7 +27,7 @@ class DroneCard extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min, // 🔑 Makes height dynamic
+          mainAxisSize: MainAxisSize.min, //
           children: [
             // Image
             ClipRRect(
@@ -69,5 +69,6 @@ class DroneCard extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

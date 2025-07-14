@@ -248,7 +248,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                       _pinController.text,
                                     );
 
-                                    if (response[0]["status"] == "success") {
+                                    if (response["status"] == "success") {
 
                                       pref.setBool("OTP_completed", true);
 

@@ -199,10 +199,10 @@ class _MobileloginState extends State<Mobilelogin> {
                                         _controller.text,
                                       );
 
-                                      if (response[0]["status"] == "success") {
+                                      if (response["status"] == "success") {
                                         pref.setString(
                                           "userId",
-                                          response[0]["userid"].toString(),
+                                          response["userid"].toString(),
                                         );
 
                                         Navigator.push(

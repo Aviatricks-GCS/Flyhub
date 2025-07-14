@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
-import 'drone_model.dart';
 
 class DroneCard extends StatelessWidget {
-  final DroneModel drone;
+  final String title;
+  final String price;
+  final String image;
+  final String rating;
 
-  const DroneCard({super.key, required this.drone});
+  DroneCard({
+    super.key,
+    required this.title,
+    required this.price,
+    required this.image,
+    required this.rating,
+  });
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double cardWidth = screenWidth * 0.42; // Adjust based on how many cards you want per row
+    double cardWidth = screenWidth * 0.42;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -18,39 +26,42 @@ class DroneCard extends StatelessWidget {
         width: cardWidth,
         padding: EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min, // 🔑 Makes height dynamic
           children: [
             // Image
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(drone.image),
-                  fit: BoxFit.contain,
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                image,
+                height: 100,
+                fit: BoxFit.contain,
               ),
             ),
             SizedBox(height: 10),
-            // Name
+            // Title
             Text(
-              drone.name,
+              title,
+              textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
             SizedBox(height: 5),
             // Price
             Text(
-              "₹ ${drone.price}",
+              "$price",
+              textAlign: TextAlign.center,
               style: TextStyle(color: Colors.deepPurple),
             ),
             SizedBox(height: 5),
             // Rating
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(5, (index) {
+                int ratingValue = int.tryParse(rating) ?? 0;
                 return Icon(
                   Icons.star,
                   size: 16,
-                  color: index < drone.rating ? Colors.orange : Colors.grey[300],
+                  color: index < ratingValue ? Colors.orange : Colors.grey[300],
                 );
               }),
             ),

@@ -7,9 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'CommonClass/Utils.dart';
 import 'buildPilotTile.dart';
 import 'category_tile.dart';
-import 'drone_card.dart';
-import 'drone_model.dart';
 import 'package:http/http.dart' as http;
+
+import 'drone_card.dart';
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     gethomedata();
   }
-
+  var data=[];
   var categories = [
     // {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
     // {"icon": Icons.settings, "label": "parts & accessories"},
@@ -35,10 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // {"icon": Icons.rule, "label": "Regulatory"},
   ];
 
-  final List<DroneModel> featuredDrones = [
-    DroneModel(name: "DJI Mavic 3 Pro", price: "25500", image: "assets/images/MaskGroup34@2x.png", rating: 4.5),
-    DroneModel(name: "Autel EVO Lite+", price: "12000", image: "assets/images/MaskGroup38@2x.png", rating: 4.0),
+  var featuredDrones = [
+    // DroneModel(name: "DJI Mavic 3 Pro", price: "25500", image: "assets/images/MaskGroup34@2x.png", rating: 4.5),
+    // DroneModel(name: "Autel EVO Lite+", price: "12000", image: "assets/images/MaskGroup38@2x.png", rating: 4.0),
   ];
+  var feature="";
 
   @override
   Widget build(BuildContext context) {
@@ -111,23 +112,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text("Featured Drones", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Text("${feature}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
-            SizedBox (
-              height: 220,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: featuredDrones.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: DroneCard(drone: featuredDrones[index]),
-                ),
-              ),
+            GridView.count(
+              padding: EdgeInsets.all(16),
+              crossAxisCount: 2,
+              childAspectRatio: 0.75, // Adjust as needed for extra text height
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              children: featuredDrones.map((c) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DroneCard(
+                      title: c['title'],
+                      price: c['price'],
+                      image: c['img'],
+                      rating: c['rating'],
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
 
-
+            //DroneCard(drone: featuredDrones[index]),
             // Pesticide Spraying Banner
             Padding(
               padding: const EdgeInsets.all(16),
@@ -351,11 +364,69 @@ class _HomeScreenState extends State<HomeScreen> {
       );
   }
 
+
+  void preloadWidgets() async {
+    List<Widget> widgets = [];
+    for (int i = 0; i < data.length; i++) {
+      var currentItem = data[i];
+      // Ensure every widget gets a unique key
+      switch (currentItem['template']) {
+        case 'template_1':{
+          categories=currentItem['items'];
+        }
+        case 'template_2':{
+      }
+        case 'template_3':{
+          feature=currentItem['title'];
+          featuredDrones=currentItem['items'];
+
+          print('Response: ${currentItem['items']}');
+        }
+          switch (currentItem['type']) {
+            case 'type1':
+            case 'type2':
+            case 'type3':
+            case 'type4':
+              // widgets.add(
+              //   await Template1.template_one_views(
+              //       context,
+              //       data,
+              //       i,
+              //           (
+              //           newLikeStatus,
+              //           likedCount,
+              //           ) =>
+              //           handleLikeUpdate(i, newLikeStatus, likedCount),
+              //           (isFav) => handleFavouriteStatus(i, isFav)),
+              // );
+              // break;
+          }
+          break;
+
+
+
+
+
+
+
+
+
+
+        default:
+          widgets.add(Container());
+          break;
+      }
+    }
+
+
+  }
+
+
   Future<dynamic> gethomedata() async {
     print('Request data from getFavData ');
 
     var _body = {
-      "action": "getHomeCat",
+      "action": "homeRequest",
       "lang": "1"
     };
 
@@ -364,11 +435,12 @@ class _HomeScreenState extends State<HomeScreen> {
     print('Request data from getFavData $_body');
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+      /*final List<dynamic>*/ data = json.decode(response.body);
       print('Response: $data');
+      preloadWidgets();
 
       setState(() {
-        categories = data;
+        //categories = data;
       });
       String toastMessage = "data";
       Fluttertoast.showToast(

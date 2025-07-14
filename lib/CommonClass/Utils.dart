@@ -129,4 +129,15 @@ class Utils{
     return 'Device information not available';
   }
 
+  static Color hexToColor(String hex) {
+    hex = hex.replaceAll("#", "");
+    if (hex.length == 6) {
+      hex = "FF$hex";
+    }else {
+      hex = "FFE7F3EF";
+    }
+    return Color(int.parse("0x$hex"));
+  }
+
+
 }

@@ -239,11 +239,17 @@ class _OtpScreenState extends State<OtpScreen> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (await Utils.checkInternetConnection()) {
+
+                                    pref = await SharedPreferences.getInstance();
+
                                     var response = await _apiClass.verifyOTP(
                                       _pinController.text,
                                     );
 
                                     if (response[0]["status"] == "success") {
+
+                                      pref.setBool("OTP_completed", true);
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

@@ -56,141 +56,164 @@ class _SelectlanguageState extends State<Selectlanguage> {
             horizontal: w * 0.07,
             vertical: h * 0.05,
           ),
-          child: Column(
-            children: [
-              // This Expanded will take all available space and center its child
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min, // Important for centering
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Choose Language',
-                        style: GoogleFonts.lexend(
-                          fontSize: w * 0.055,
-                          fontWeight: FontWeight.w600,
-                        ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min, // Important for centering
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Choose Language',
+                      style: GoogleFonts.lexend(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
                       ),
-                      SizedBox(height: h * 0.005),
-                      Text(
-                        'Update of preferred language for your mobile app use',
-                        style: GoogleFonts.lexend(
-                          fontSize: w * 0.035,
-                          color: Colors.grey,
-                        ),
+                    ),
+                    SizedBox(height: h * 0.005),
+                    Text(
+                      'Update of preferred language for your mobile app use',
+                      style: GoogleFonts.lexend(
+                        fontSize: 13,
+                        color: Colors.grey,
                       ),
-                      SizedBox(height: h * 0.035),
+                    ),
+                    SizedBox(height: h * 0.035),
 
-                      SizedBox(
-                        height: h * 0.65,
-                        child: languageList.isEmpty
-                            ? Center(child: CircularProgressIndicator())
-                            : !isInternet
-                            ? Center(child: CircularProgressIndicator())
-                            : GridView.builder(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                physics: AlwaysScrollableScrollPhysics(),
-                                itemCount: languageList.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 1.2,
-                                      crossAxisSpacing: 15,
-                                      mainAxisSpacing: 15,
-                                    ),
-                                itemBuilder: (context, i) {
-                                  final lang = languageList[i];
-                                  final isSel = i == selectedIndex;
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      pref =
-                                          await SharedPreferences.getInstance();
-                                      pref.setInt("langId", lang['id']);
+                    SizedBox(
+                      height: h * 0.6,
+                      child: languageList.isEmpty
+                          ? Center(child: CircularProgressIndicator())
+                          : !isInternet
+                          ? Center(child: CircularProgressIndicator())
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              itemCount: languageList.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 1.3,
+                                    crossAxisSpacing: 30,
+                                    mainAxisSpacing: 30,
+                                  ),
+                              itemBuilder: (context, i) {
+                                final lang = languageList[i];
+                                final isSel = i == selectedIndex;
+                                return GestureDetector(
+                                  onTap: () async {
+                                    pref =
+                                        await SharedPreferences.getInstance();
+                                    pref.setInt("langId", lang['id']);
 
-                                      setState(() {
-                                        selectedIndex = i;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFE7F3EF),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: isSel
-                                            ? Border.all(
-                                                color: Color(0xFF7049EC),
-                                                width: 2,
-                                              )
-                                            : null,
+                                    setState(() {
+                                      selectedIndex = i;
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Utils.hexToColor(
+                                        lang['bgcolor'],
                                       ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.network(
-                                            lang['img'],
-                                            width: w * 0.12,
-                                            height: w * 0.12,
-                                            placeholderBuilder: (context) =>
-                                                CircularProgressIndicator(),
-                                            fit: BoxFit.contain,
-                                            //semanticsLabel: lang['label'],
-                                            clipBehavior: Clip.antiAlias,
+                                      borderRadius: BorderRadius.circular(
+                                        12,
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.all(8),
+                                    child: Stack(
+                                      children: [
+                                        Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+
+                                            children: [
+                                              SvgPicture.network(
+                                                lang['img'],
+                                                width: 40,
+                                                height: 40,
+                                                placeholderBuilder: (context) =>
+                                                    CircularProgressIndicator(),
+                                                fit: BoxFit.contain,
+                                                clipBehavior: Clip.antiAlias,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                lang['name'],
+                                                style: GoogleFonts.lexend(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
                                           ),
+                                        ),
 
-                                          SizedBox(height: 8),
-
-                                          Text(
-                                            lang['name'],
-                                            style: GoogleFonts.lexend(
-                                              fontSize: w * 0.038,
-                                              fontWeight: FontWeight.w500,
+                                        // Tick icon inside top-right corner
+                                        if (isSel)
+                                          Positioned(
+                                            top: 8,
+                                            right: 8,
+                                            child: Container(
+                                              width: 18,
+                                              height: 18,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.green, // Same as your button color
+                                              ),
+                                              child: Icon(
+                                                Icons.check,
+                                                size: 14,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
-              ),
 
-              // Button stays at the bottom
-              SizedBox(
-                width: double.infinity,
-                height: h * 0.065,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (selectedIndex >= 0) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Mobilelogin()),
-                      );
-                    } else {
-                      Utils.bottomtoast(context, "Choose Your Language");
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7049EC),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                // Button stays at the bottom
+                SizedBox(
+                  width: w * 0.8,
+                  height: h * 0.065,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (selectedIndex >= 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Mobilelogin(),
+                          ),
+                        );
+                      } else {
+                        Utils.bottomtoast(context, "Choose Your Language");
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF7049EC),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Continue in English',
-                    style: GoogleFonts.lexend(
-                      fontSize: w * 0.045,
-                      color: Colors.white,
+                    child: Text(
+                      'Continue',
+                      style: GoogleFonts.lexend(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

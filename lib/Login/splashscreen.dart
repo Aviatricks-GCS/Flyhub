@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flyhub/HomeScreen.dart';
 import 'package:flyhub/Login/SelectLanguage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -14,6 +16,7 @@ class Splashscreen extends StatefulWidget {
 
 class _SplashscreenState extends State<Splashscreen> {
   Timer? _timer;
+  late SharedPreferences pref;
 
   @override
   void initState() {
@@ -21,17 +24,28 @@ class _SplashscreenState extends State<Splashscreen> {
 
     _timer = Timer(Duration(milliseconds: 3000), () async {
       if (!mounted) return;
-      //bool isFirstLaunch = pref.getBool('isFirstLaunch') ?? true;
       navigateToNextPage();
     });
 
   }
 
-  void navigateToNextPage() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Selectlanguage()),
-    );
+  Future<void> navigateToNextPage() async {
+
+    pref = await SharedPreferences.getInstance();
+    bool otpCompleted = pref.getBool('OTP_completed') ?? false;
+
+    if(!otpCompleted){
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Selectlanguage()),
+      );
+    }else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Homepage()),
+      );
+    }
+
   }
 
   @override

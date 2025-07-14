@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'CommonClass/ApiClass.dart';
 import 'CommonClass/Utils.dart';
 import 'buildPilotTile.dart';
 import 'category_tile.dart';
@@ -16,7 +18,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ApiClass _apiClass = ApiClass();
   int _selectedIndex = 0;
+  late SharedPreferences pref;
+
 
   @override
   void initState() {
@@ -24,6 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
     gethomedata();
   }
   var data=[];
+  bool isInternet = true;
+  var icon1="";
+  var icon2="";
+  var textdata="";
   var categories = [
     // {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
     // {"icon": Icons.settings, "label": "parts & accessories"},
@@ -72,9 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center, // Horizontal center
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset('assets/images/flyHub_logo.svg',
-                        width: 50,
-                        height: 50,
+                      SvgPicture.asset('assets/images/flyhubicon.svg',
+                        width: 100,
+                        height: 100,
                       ),
                     ],
                   ),
@@ -100,18 +109,38 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: NeverScrollableScrollPhysics(),
               children: categories.map((c) => CategoryTile(icon: c['image'], label: c['cname'])).toList(),
             ),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton.icon(
+              child: ElevatedButton(
                 onPressed: () {},
-                icon: Icon(Icons.store),
-                label: Text("Register as a seller/services provider", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  shape: StadiumBorder(),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.network(icon1, width: 24, height: 24, fit: BoxFit.contain),
+                    SizedBox(width: 8),
+                    Text(
+                      textdata,
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Image.network(icon2, width: 24, height: 24, fit: BoxFit.contain),
+                  ],
                 ),
               ),
             ),
+
 
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -361,11 +390,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      );
+    );
   }
 
 
   void preloadWidgets() async {
+
     List<Widget> widgets = [];
     for (int i = 0; i < data.length; i++) {
       var currentItem = data[i];
@@ -373,91 +403,43 @@ class _HomeScreenState extends State<HomeScreen> {
       switch (currentItem['template']) {
         case 'template_1':{
           categories=currentItem['items'];
+          print('Response: ${currentItem['items']}');
         }
         case 'template_2':{
-      }
+           icon1=currentItem['right_img'];
+           icon2=currentItem['left_img'];
+           textdata=currentItem['title'];
+           print('Response: ${currentItem['right_img']}');
+           print('Response: ${currentItem['left_img']}');
+           print('Response: ${currentItem['items']}');
+        }
         case 'template_3':{
           feature=currentItem['title'];
           featuredDrones=currentItem['items'];
-
+          print('Response: ${currentItem['title']}');
           print('Response: ${currentItem['items']}');
         }
-          switch (currentItem['type']) {
-            case 'type1':
-            case 'type2':
-            case 'type3':
-            case 'type4':
-              // widgets.add(
-              //   await Template1.template_one_views(
-              //       context,
-              //       data,
-              //       i,
-              //           (
-              //           newLikeStatus,
-              //           likedCount,
-              //           ) =>
-              //           handleLikeUpdate(i, newLikeStatus, likedCount),
-              //           (isFav) => handleFavouriteStatus(i, isFav)),
-              // );
-              // break;
-          }
-          break;
-
-
-
-
-
-
-
-
-
+        switch (currentItem['type']) {
+          case 'type1':
+          case 'type2':
+          case 'type3':
+          case 'type4':
+        }
+        break;
 
         default:
           widgets.add(Container());
           break;
       }
     }
-
-
   }
-
-
   Future<dynamic> gethomedata() async {
-    print('Request data from getFavData ');
-
-    var _body = {
-      "action": "homeRequest",
-      "lang": "1"
-    };
-
-    var response = await http.post(Uri.parse(Utils.liveLocal_Url), body: _body);
-
-    print('Request data from getFavData $_body');
-
-    if (response.statusCode == 200) {
-      /*final List<dynamic>*/ data = json.decode(response.body);
-      print('Response: $data');
+    if (await Utils.checkInternetConnection()) {
+      isInternet = true;
+      data = await _apiClass.gethomedata();
       preloadWidgets();
-
-      setState(() {
-        //categories = data;
-      });
-      String toastMessage = "data";
-      Fluttertoast.showToast(
-        msg: toastMessage,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-
-
     } else {
-      print(
-          'Failed to load data. Server responded with status code: ${response.statusCode}');
-      throw Exception("Failed to load data for Internal Server Error");
+      isInternet = false;
     }
   }
 

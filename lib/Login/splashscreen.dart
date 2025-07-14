@@ -5,6 +5,8 @@ import 'package:flyhub/Login/SelectLanguage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Dynamichome.dart';
+
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
 
@@ -30,7 +32,7 @@ class _SplashscreenState extends State<Splashscreen> {
   void navigateToNextPage() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Selectlanguage()),
+      MaterialPageRoute(builder: (context) => dynamichome()),
     );
   }
 

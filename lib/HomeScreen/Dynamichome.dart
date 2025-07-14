@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'HomeScreen.dart';
-import 'MarketPage.dart';
-import 'PilotPage.dart';
-import 'ProfilePage.dart';
-import 'RentalsPage.dart';
+import '../Bottoms/ProfilePage.dart';
+import '../Bottoms/MarketPage.dart';
+import '../Bottoms/PilotPage.dart';
+import '../Bottoms/RentalsPage.dart';
+import 'homescreen.dart';
 
 
 
@@ -32,7 +32,6 @@ class _dynamichomeState extends State<dynamichome> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
-
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

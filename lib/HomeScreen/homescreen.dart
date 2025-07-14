@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'CommonClass/ApiClass.dart';
-import 'CommonClass/Utils.dart';
-import 'buildPilotTile.dart';
-import 'category_tile.dart';
-import 'package:http/http.dart' as http;
+import '../CommonClass/ApiClass.dart';
+import '../CommonClass/Utils.dart';
+import '../buildPilotTile.dart';
+import '../category_tile.dart';
 
-import 'drone_card.dart';
+
+import '../drone_card.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -24,12 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   late SharedPreferences pref;
 
-
-  @override
-  void initState() {
-    super.initState();
-    gethomedata();
-  }
   var data=[];
   bool isInternet = true;
   var icon1="";
@@ -51,6 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
     // DroneModel(name: "Autel EVO Lite+", price: "12000", image: "assets/images/MaskGroup38@2x.png", rating: 4.0),
   ];
   var feature="";
+
+  @override
+  void initState() {
+    super.initState();
+    gethomedata();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SvgPicture.asset('assets/images/flyhubicon.svg',
-                        width: 100,
-                        height: 100,
+                        width: 65,
+                        height: 65,
                       ),
                     ],
                   ),
@@ -148,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: Text("${feature}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
+
             GridView.count(
               padding: EdgeInsets.all(16),
               crossAxisCount: 2,
@@ -435,6 +437,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
   }
+
+
   Future<dynamic> gethomedata() async {
     if (await Utils.checkInternetConnection()) {
       isInternet = true;

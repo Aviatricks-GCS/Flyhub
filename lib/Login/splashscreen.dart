@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flyhub/HomeScreen.dart';
+
 import 'package:flyhub/Login/SelectLanguage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Dynamichome.dart';
+import '../HomeScreen/Dynamichome.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});

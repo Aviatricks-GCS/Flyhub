@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'MarketItemCard.dart';
+import '../MarketItemCard.dart';
 
 class MarketPage extends StatefulWidget {
   @override

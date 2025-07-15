@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flyhub/CommonClass/Utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'CommonClass/ApiClass.dart';
@@ -72,12 +73,13 @@ class _AdddroneState extends State<Adddrone> {
 
   @override
   Widget build(BuildContext context) {
-
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('Add My Drone'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -89,7 +91,29 @@ class _AdddroneState extends State<Adddrone> {
         padding: EdgeInsets.all(16),
         child: ElevatedButton(
           onPressed: () async {
-            var response = await _apiClass.addDrone(widget.clickUrl);
+            Map<String, File?> fileImages = {
+              for (var key in images.keys)
+                key: images[key] != null ? File(images[key]!.path) : null,
+            };
+
+            var response = await _apiClass.addDrone(
+              dgcaApproval,
+              selectedPurposeId.toString(),
+              amountController.text,
+              batteryController.text,
+              weightController.text,
+              modelController.text,
+              hoursController.text,
+              minutesController.text,
+              flyingTimeController.text,
+              chargingTimeController.text,
+              descriptionController.text,
+              fileImages,
+            );
+
+            if (response["status"] == "success") {
+              Utils.bottomtoast(context, "Added Successfully");
+            }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.deepPurple,
@@ -396,7 +420,6 @@ class _AdddroneState extends State<Adddrone> {
               ),
               maxLines: 1,
               maxLength: 7,
-
             ),
 
             SizedBox(height: 15),

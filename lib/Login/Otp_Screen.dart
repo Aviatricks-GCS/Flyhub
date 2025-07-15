@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../CommonClass/ApiClass.dart';
 import '../CommonClass/Utils.dart';
-import '../HomeScreen/homescreen.dart';
+import '../HomeScreen/Bottoms/homescreen.dart';
 
 
 class OtpScreen extends StatefulWidget {

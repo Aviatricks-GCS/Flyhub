@@ -5,13 +5,15 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../CommonClass/ApiClass.dart';
-import '../CommonClass/Utils.dart';
-import '../buildPilotTile.dart';
-import '../category_tile.dart';
+import '../../CommonClass/ApiClass.dart';
+import '../../CommonClass/Utils.dart';
+import '../../buildPilotTile.dart';
+import '../../category_tile.dart';
+import '../../drone_card.dart';
 
 
-import '../drone_card.dart';
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -29,21 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   var icon1="";
   var icon2="";
   var textdata="";
-  var categories = [
-    // {"icon": Icons.shopping_cart, "label": "Buy/Sell Drones"},
-    // {"icon": Icons.settings, "label": "parts & accessories"},
-    // {"icon": Icons.person, "label": "Hire Pilots"},
-    // {"icon": Icons.build, "label": "Drone Services"},
-    // {"icon": Icons.school, "label": "Training"},
-    // {"icon": Icons.support, "label": "Maintenance"},
-    // {"icon": Icons.work, "label": "Jobs Portal"},
-    // {"icon": Icons.rule, "label": "Regulatory"},
-  ];
+  var categories = [];
 
-  var featuredDrones = [
-    // DroneModel(name: "DJI Mavic 3 Pro", price: "25500", image: "assets/images/MaskGroup34@2x.png", rating: 4.5),
-    // DroneModel(name: "Autel EVO Lite+", price: "12000", image: "assets/images/MaskGroup38@2x.png", rating: 4.0),
-  ];
+  var featuredDrones = [];
   var feature="";
 
   @override

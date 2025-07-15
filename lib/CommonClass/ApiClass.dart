@@ -37,6 +37,32 @@ class ApiClass {
     return langList;
   }
 
+  Future<Map<String, dynamic>> getLoginscreen() async {
+    Map<String, dynamic> langMap = {};
+    pref = await SharedPreferences.getInstance();
+    var lanId = pref.getInt("langId");
+    var _body = {"action": "getLoginscreen", "lang": "$lanId"};
+
+    print("Request data from getLang action : $_body");
+
+    try {
+      var response = await http.post(Uri.parse(Utils.apiUrl), body: _body);
+
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        langMap = json.decode(responseBody); // Now correctly expecting a Map
+        print("Decoded langMap: $langMap");
+      } else {
+        print('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception("Failed to load data from server");
+      }
+    } catch (e) {
+      print("Exception occurred in getLanguage: $e");
+    }
+
+    return langMap;
+  }
+
   Future<dynamic> getOtp(String mobileNo) async {
     pref = await SharedPreferences.getInstance();
     //var mobile_number = pref.getString("mobile_number") ?? "";

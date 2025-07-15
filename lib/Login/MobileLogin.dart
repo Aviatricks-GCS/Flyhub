@@ -7,7 +7,9 @@ import '../CommonClass/ApiClass.dart';
 import '../CommonClass/Utils.dart';
 
 class Mobilelogin extends StatefulWidget {
-  const Mobilelogin({super.key});
+  final Map<String, dynamic> logindata;
+
+  const Mobilelogin({super.key, required this.logindata});
 
   @override
   State<Mobilelogin> createState() => _MobileloginState();
@@ -19,7 +21,7 @@ class _MobileloginState extends State<Mobilelogin> {
   late SharedPreferences pref;
 
   final ApiClass _apiClass = ApiClass();
-
+  bool isInternet = true;
   @override
   void initState() {
     super.initState();
@@ -57,7 +59,7 @@ class _MobileloginState extends State<Mobilelogin> {
                   children: [
                     // Login Title
                     Text(
-                      'Login',
+                      '${widget.logindata['otp_page']['title1']}',
                       style: GoogleFonts.lexend(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.w600,
@@ -68,7 +70,7 @@ class _MobileloginState extends State<Mobilelogin> {
                     SizedBox(height: screenHeight * 0.01),
 
                     Text(
-                      'Please enter your mobile number',
+                      '${widget.logindata['otp_page']['title2']}',
                       style: GoogleFonts.lexend(
                         fontSize: screenWidth * 0.035,
                         color: Colors.grey[700],
@@ -83,7 +85,7 @@ class _MobileloginState extends State<Mobilelogin> {
                       autofocus: true,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: 'Mobile Number',
+                        labelText: '${widget.logindata['otp_page']['title3']}',
                         labelStyle: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black, // Unfocused label color
@@ -135,29 +137,10 @@ class _MobileloginState extends State<Mobilelogin> {
                             // aligns text vertically with checkbox
                             child: Text.rich(
                               TextSpan(
-                                text: 'I will Agree to our ',
+                                text: '${widget.logindata['otp_page']['title4']}',
                                 style: GoogleFonts.lexend(
                                   fontSize: screenWidth * 0.03,
                                 ),
-                                children: [
-                                  TextSpan(
-                                    text: 'Terms & Conditions',
-                                    style: GoogleFonts.lexend(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: screenWidth * 0.03,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                  TextSpan(text: ' and '),
-                                  TextSpan(
-                                    text: 'Privacy Policy',
-                                    style: GoogleFonts.lexend(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: screenWidth * 0.03,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ),
@@ -208,7 +191,7 @@ class _MobileloginState extends State<Mobilelogin> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => OtpScreen(),
+                                            builder: (context) => OtpScreen(logindata:widget.logindata),
                                           ),
                                         );
                                       } else {
@@ -231,7 +214,7 @@ class _MobileloginState extends State<Mobilelogin> {
                             ),
                           ),
                           child: Text(
-                            'Continue',
+                            '${widget.logindata['otp_page']['button_name']}',
                             style: GoogleFonts.lexend(
                               fontSize: screenWidth * 0.045,
                               color: Colors.white,

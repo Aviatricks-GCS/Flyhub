@@ -15,7 +15,7 @@ class Template3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,11 +25,12 @@ class Template3 extends StatelessWidget {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
 
+          SizedBox(height: 10.0,),
           // Grid
           GridView.count(
-            //padding: EdgeInsets.all(16),
+            padding: EdgeInsets.symmetric(horizontal: 4),
             crossAxisCount: 2,
-            childAspectRatio: 0.75,
+            childAspectRatio: 0.85,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             mainAxisSpacing: 16,

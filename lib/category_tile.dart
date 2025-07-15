@@ -19,11 +19,11 @@ class CategoryTile extends StatelessWidget {
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: Color(0xffF1F3F3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Image.network(
                     icon,
                     fit: BoxFit.contain,
@@ -35,7 +35,7 @@ class CategoryTile extends StatelessWidget {
                 width: 70,
                 child: Text(
                   label,
-                  style: TextStyle(fontSize: 10,),
+                  style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

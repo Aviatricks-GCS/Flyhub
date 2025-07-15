@@ -24,7 +24,7 @@ class _Template2State extends State<Template2> {
     final height = MediaQuery.of(context).size.height;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      padding: const EdgeInsets.only(left: 18.0, right: 18, bottom: 14,),
       child: Container(
         width: double.infinity,
         //height: height * 0.06,

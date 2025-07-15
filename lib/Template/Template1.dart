@@ -15,7 +15,7 @@ class _Template1State extends State<Template1> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      padding: EdgeInsets.only(left: 16,right: 16,top: 10),
+      padding: EdgeInsets.only(left: 20,right: 20,top: 10),
       crossAxisCount: 4,
       childAspectRatio: 0.7,
       shrinkWrap: true,

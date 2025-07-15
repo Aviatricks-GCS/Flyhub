@@ -144,4 +144,93 @@ class ApiClass {
     }
     return responseData;
   }
+
+
+  Future<dynamic> addDrone(String clickUrl) async {
+    pref = await SharedPreferences.getInstance();
+    var mobile_number = pref.getString("mobile_number") ?? "";
+    var userId = pref.getString("userId") ?? "";
+
+    var responseData;
+
+    var _body = {
+      "action" : "addDrone",
+      "user_id": userId,
+      "DGCA_approval": "0",
+      "model": "K++",
+      "type": "2",
+      "purpose": "1",
+      "charging_time": "2 hours",
+      "flying_time": "6hours",
+      "rental_terms": "Agri Drone ",
+      "price": "2500",
+      "image4": "",
+      "image3": "",
+      "image2": "",
+      "image1": "",
+      "tags": "",
+      "discounts": "1000",
+      "drone_weight": "24 kgs",
+      "battery_capacity": "33000",
+      "lat": "5",
+      "long": "50",
+      "ratings": "5",
+      "price_type": "2",
+      "availability": "",
+      "insurance_details": "testing insurance",
+      "damage_report": "testing damage",
+      "pickup_location": "Tiruchengode",
+      "delivery_method": "testing"
+    };
+
+    print("Request data from addDrone : $_body");
+
+    try {
+      var response = await http.post(Uri.parse(Utils.apiUrl), body: _body);
+
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        responseData = json.decode(responseBody);
+        print("Response data from addDrone : $responseData");
+      } else {
+        print(
+          'Failed to load data. Server responded with status code: ${response.statusCode}',
+        );
+        throw Exception("Failed to load data for Internal Server Error");
+      }
+    } catch (e) {
+      print(e);
+    }
+    return responseData;
+  }
+
+
+  Future<dynamic> getPurpose() async {
+    pref = await SharedPreferences.getInstance();
+    var lanId = pref.getInt("langId");
+    var responseData;
+    var _body = {"action": "getMaster", "lang": "$lanId"};
+
+    var response = await http.post(Uri.parse(Utils.liveLocal_Url), body: _body);
+
+    print('Request data from getPurpose $_body');
+
+    try {
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        responseData = json.decode(responseBody);
+        print('Response data from getPurpose $responseData');
+      } else {
+        print(
+          'Failed to load data. Server responded with status code: ${response.statusCode}',
+        );
+        throw Exception("Failed to load data for Internal Server Error");
+      }
+    } catch (e) {
+      print(e);
+    }
+    return responseData;
+  }
+
+
 }

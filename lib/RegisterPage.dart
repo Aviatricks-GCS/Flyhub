@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatelessWidget {
-  final List<Map<String, dynamic>> registerList;
-  final String title;
+  final List registerList;
+  final String appBar_title;
+  final String form_title;
 
-  RegisterPage({required this.registerList, required this.title});
+  RegisterPage({
+    required this.registerList,
+    required this.appBar_title,
+    required this.form_title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Register', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        title: Text(
+          appBar_title,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+            fontSize: 18
+          ),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [Icon(Icons.favorite_border)],
-        elevation: 0,
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -24,7 +37,7 @@ class RegisterPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
+              form_title,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             SizedBox(height: 12),

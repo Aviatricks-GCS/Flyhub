@@ -9,8 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../CommonClass/ApiClass.dart';
 import '../CommonClass/Utils.dart';
-import '../HomeScreen/homescreen.dart';
-
+import '../HomeScreen/Dynamichome.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -110,7 +109,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void dispose() {
-
     _timer?.cancel();
     super.dispose();
   }
@@ -241,15 +239,14 @@ class _OtpScreenState extends State<OtpScreen> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (await Utils.checkInternetConnection()) {
-
-                                    pref = await SharedPreferences.getInstance();
+                                    pref =
+                                        await SharedPreferences.getInstance();
 
                                     var response = await _apiClass.verifyOTP(
                                       _pinController.text,
                                     );
 
                                     if (response["status"] == "success") {
-
                                       pref.setBool("OTP_completed", true);
 
                                       Navigator.push(
@@ -276,7 +273,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                 ),
                                 child: Text(
                                   'Verify OTP',
-                                  style: GoogleFonts.lexend(color: Colors.white),
+                                  style: GoogleFonts.lexend(
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),

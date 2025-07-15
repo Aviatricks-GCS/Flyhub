@@ -48,56 +48,56 @@ class _HomeScreenState extends State<HomeScreen> {
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView(
+          children: [
+            Container(
+              color: Color(0xFF1A0A5B), // dark purple background
+              padding: EdgeInsets.all(16),
+              child: Column(
                 children: [
-                  Container(
-                    color: Color(0xFF1A0A5B), // dark purple background
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.menu, color: Colors.white),
-                            Row(
-                              children: [
-                                Icon(Icons.shopping_cart, color: Colors.white),
-                                SizedBox(width: 20),
-                                Icon(Icons.notifications, color: Colors.white),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/flyhubicon.svg',
-                              width: 65,
-                              height: 65,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            prefixIcon: Icon(Icons.search),
-                            hintText: "Search drones, pilots, services...",
-                            suffixIcon: Icon(Icons.mic),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                      ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.menu, color: Colors.white),
+                      Row(
+                        children: [
+                          Icon(Icons.shopping_cart, color: Colors.white),
+                          SizedBox(width: 20),
+                          Icon(Icons.notifications, color: Colors.white),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/flyhubicon.svg',
+                        width: 65,
+                        height: 65,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.search),
+                      hintText: "Search drones, pilots, services...",
+                      suffixIcon: Icon(Icons.mic),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
-
-                  ...preloadedWidgets,
                 ],
               ),
+            ),
+
+            ...preloadedWidgets,
+          ],
+        ),
       ),
     );
   }
@@ -114,7 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
         case 'template_2':
           widgets.add(
             Template2(
-              title: currentItem['title'],
+              title : currentItem['title'],
+              appBar_title: currentItem['form_top'],
+              form_title: currentItem['form_title'],
               rightImg: currentItem['right_img'],
               leftImg: currentItem['left_img'],
               items: currentItem['items'],

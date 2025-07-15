@@ -3,10 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flyhub/Template/Template1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../CommonClass/ApiClass.dart';
-import '../CommonClass/Utils.dart';
-import '../Template/Template2.dart';
-import '../Template/Template3.dart';
+import '../../CommonClass/ApiClass.dart';
+import '../../CommonClass/Utils.dart';
+import '../../Template/Template2.dart';
+import '../../Template/Template3.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

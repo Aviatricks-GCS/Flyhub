@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../Bottoms/ProfilePage.dart';
-import '../Bottoms/MarketPage.dart';
-import '../Bottoms/PilotPage.dart';
-import '../Bottoms/RentalsPage.dart';
-import 'homescreen.dart';
+import 'Bottoms/MarketPage.dart';
+import 'Bottoms/PilotPage.dart';
+import 'Bottoms/ProfilePage.dart';
+import 'Bottoms/RentalsPage.dart';
+import 'Bottoms/homescreen.dart';
+
+
 
 
 

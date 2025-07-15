@@ -12,7 +12,9 @@ import '../CommonClass/Utils.dart';
 import '../HomeScreen/Dynamichome.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final Map<String, dynamic> logindata;
+
+  const OtpScreen({super.key, required this.logindata});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -22,7 +24,8 @@ class _OtpScreenState extends State<OtpScreen> {
   int _secondsRemaining = 30;
   Timer? _timer;
   late SharedPreferences pref;
-
+  bool isLoading = false;
+  bool isInternet = true;
   final ApiClass _apiClass = ApiClass();
 
   var mobile_number = "";
@@ -149,7 +152,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Verify Details',
+                                '${widget.logindata['verify_page']['title1']}',
                                 style: GoogleFonts.lexend(
                                   fontSize: w * 0.06,
                                   fontWeight: FontWeight.bold,
@@ -163,7 +166,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               children: [
                                 Text.rich(
                                   TextSpan(
-                                    text: 'OTP will send vis SMS to ',
+                                    text: '${widget.logindata['verify_page']['title2']} ',
                                     style: GoogleFonts.lexend(
                                       color: Colors.black87,
                                       fontSize: w * 0.035,
@@ -233,47 +236,92 @@ class _OtpScreenState extends State<OtpScreen> {
 
                             SizedBox(height: h * 0.06),
 
+
+
                             SizedBox(
-                              width: w * 0.6,
-                              height: h * 0.06,
+                              width: w * 0.8,
+                              height: h * 0.065,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  if (await Utils.checkInternetConnection()) {
-                                    pref =
-                                        await SharedPreferences.getInstance();
+                                    if (await Utils.checkInternetConnection()) {
+                                      setState(() {
+                                        isLoading = true; // Show loader
+                                      });
 
-                                    var response = await _apiClass.verifyOTP(
-                                      _pinController.text,
-                                    );
+                                      isInternet = true;
 
-                                    if (response["status"] == "success") {
-                                      pref.setBool("OTP_completed", true);
 
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => dynamichome(),
-                                        ),
+
+                                      pref =
+                                      await SharedPreferences.getInstance();
+
+                                      var response = await _apiClass.verifyOTP(
+                                        _pinController.text,
                                       );
+                                      setState(() {
+                                        isLoading = false; // Hide loader
+                                      });
+                                      if (response["status"] == "success")  {
+                                        pref.setBool("OTP_completed", true);
+
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => dynamichome(),
+                                          ),
+                                        );
+                                        Utils.bottomtoast(
+                                          context,
+                                          "${widget.logindata['verify_page']['otp_success']}'",
+                                        );
+                                      } else {
+                                        Utils.bottomtoast(
+                                          context,
+                                          "${widget.logindata['verify_page']['otp_error']}'",
+                                        );
+                                      }
                                     } else {
-                                      print('Response Not Success');
+                                      isInternet = false;
+                                      Utils.bottomtoast(
+                                        context,
+                                        "Check Your Internet Connection",
+                                      );
                                     }
-                                  } else {
-                                    Utils.bottomtoast(
-                                      context,
-                                      "Check Your Internet Connection",
-                                    );
-                                  }
+
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF7057FF),
+                                  backgroundColor: const Color(0xFF7049EC),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
                                 ),
-                                child: Text(
-                                  'Verify OTP',
+                                child: isLoading
+                                    ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${widget.logindata['verify_page']['button_name']}',
+                                      style: GoogleFonts.lexend(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                    : Text(
+                                  '${widget.logindata['verify_page']['button_name']}',
                                   style: GoogleFonts.lexend(
+                                    fontSize: 18,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -298,7 +346,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   : null, // disables tap while timer is active
                               child: Text.rich(
                                 TextSpan(
-                                  text: 'Resend OTP ',
+                                  text: '${widget.logindata['verify_page']['title3']}',
                                   style: GoogleFonts.lexend(
                                     color: _secondsRemaining > 0
                                         ? Colors.black38
@@ -306,26 +354,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     fontSize: w * 0.04,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  children: _secondsRemaining > 0
-                                      ? [
-                                          TextSpan(
-                                            text: 'after ',
-                                            style: GoogleFonts.lexend(
-                                              color: Colors.black38,
-                                              fontSize: w * 0.035,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                '${_secondsRemaining.toString()} sec',
-                                            style: GoogleFonts.lexend(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: w * 0.035,
-                                            ),
-                                          ),
-                                        ]
-                                      : [],
+
                                 ),
                               ),
                             ),

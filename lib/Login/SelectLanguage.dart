@@ -17,10 +17,12 @@ class _SelectlanguageState extends State<Selectlanguage> {
   final ApiClass _apiClass = ApiClass();
 
   var languageList = [];
+  bool isLoading = false;
 
   int selectedIndex = -1;
 
   bool isInternet = true;
+  var logindata;
 
   late SharedPreferences pref;
 
@@ -181,38 +183,83 @@ class _SelectlanguageState extends State<Selectlanguage> {
                 ),
 
                 // Button stays at the bottom
-                SizedBox(
-                  width: w * 0.8,
-                  height: h * 0.065,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (selectedIndex >= 0) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Mobilelogin(),
-                          ),
-                        );
-                      } else {
-                        Utils.bottomtoast(context, "Choose Your Language");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF7049EC),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: Text(
-                      'Continue',
-                      style: GoogleFonts.lexend(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+
+
+          SizedBox(
+          width: w * 0.8,
+            height: h * 0.065,
+            child: ElevatedButton(
+              onPressed: () async {
+                if (selectedIndex >= 0) {
+                  if (await Utils.checkInternetConnection()) {
+                    setState(() {
+                      isLoading = true; // Show loader
+                    });
+
+                    isInternet = true;
+                    logindata = await _apiClass.getLoginscreen();
+
+                    setState(() {
+                      isLoading = false; // Hide loader
+                    });
+
+                    if (logindata.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Mobilelogin(logindata: logindata),
+                        ),
+                      );
+                    } else {
+                      Utils.bottomtoast(context, "Server error. Try again later.");
+                    }
+                  } else {
+                    isInternet = false;
+                    Utils.bottomtoast(context, "No Internet Connection");
+                  }
+                } else {
+                  Utils.bottomtoast(context, "Choose Your Language");
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF7049EC),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: isLoading
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Continue',
+                    style: GoogleFonts.lexend(
+                      fontSize: 18,
+                      color: Colors.white,
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  ),
+                ],
+              )
+                  : Text(
+                'Continue',
+                style: GoogleFonts.lexend(
+                  fontSize: 18,
+                  color: Colors.white,
                 ),
-              ],
+              ),
+            ),
+          )
+
+          ],
             ),
           ),
         ),

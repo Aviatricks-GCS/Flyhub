@@ -21,41 +21,42 @@ class DroneCard extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: Colors.white,
       elevation: 3,
       child: Container(
         width: cardWidth,
         padding: EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min, // 🔑 Makes height dynamic
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, //
           children: [
             // Image
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
                 image,
-                height: 100,
+                height: 80,
                 fit: BoxFit.contain,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             // Title
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: TextStyle( fontSize: 12,fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 3),
             // Price
             Text(
               "$price",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.deepPurple),
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 3),
             // Rating
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: List.generate(5, (index) {
                 int ratingValue = int.tryParse(rating) ?? 0;
                 return Icon(
@@ -69,5 +70,6 @@ class DroneCard extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

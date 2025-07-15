@@ -74,15 +74,15 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(specs, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+                Text(specs, style: TextStyle(fontSize: 10, color: Colors.grey[700])),
                 SizedBox(height: 4),
                 Row(
                   children: [
                     Text('₹800', style: TextStyle(color: Colors.black)),
-                    Text('/hour', style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+                    Text('/hour', style: TextStyle(fontSize: 10, color: Colors.grey[700])),
                     SizedBox(width: 10),
                     Text('₹2,500', style: TextStyle(color: Colors.deepOrange)),
-                    Text('/day', style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+                    Text('/day', style: TextStyle(fontSize: 10, color: Colors.grey[700])),
                   ],
                 ),
                 SizedBox(height: 4),
@@ -90,7 +90,7 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
                   children: [
                     Icon(Icons.check_circle, size: 14, color: Colors.green),
                     SizedBox(width: 4),
-                    Text('Insurance', style: TextStyle(fontSize: 12, color: Colors.black)),
+                    Text('Insurance', style: TextStyle(fontSize: 10, color: Colors.black)),
                   ],
                 ),
                 SizedBox(height: 8),
@@ -140,7 +140,7 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
-              childAspectRatio: 0.70,
+              childAspectRatio: 0.61,
               children: [
                 buildRentalCard('DJI Mini 3 Pro', '4K Camera, 34min flight', 'assets/images/MaskGroup34@2x.png'),
                 buildRentalCard('Mavic Air 2', '4K Camera, 34min flight', 'assets/images/MaskGroup38@2x.png'),

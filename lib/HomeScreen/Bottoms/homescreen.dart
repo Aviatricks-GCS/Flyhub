@@ -1,18 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:flyhub/Template/Template1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../CommonClass/ApiClass.dart';
-import '../../CommonClass/Utils.dart';
-import '../../buildPilotTile.dart';
-import '../../category_tile.dart';
-import '../../drone_card.dart';
-
-
-
+import '../CommonClass/ApiClass.dart';
+import '../CommonClass/Utils.dart';
+import '../Template/Template2.dart';
+import '../Template/Template3.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,15 +20,19 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   late SharedPreferences pref;
 
-  var data=[];
+  var homeData = [];
   bool isInternet = true;
-  var icon1="";
-  var icon2="";
-  var textdata="";
+  var icon1 = "";
+  var icon2 = "";
+  var textdata = "";
   var categories = [];
 
   var featuredDrones = [];
-  var feature="";
+  var feature = "";
+
+  List<Widget> preloadedWidgets = [];
+
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -42,13 +40,131 @@ class _HomeScreenState extends State<HomeScreen> {
     gethomedata();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: ListView(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
+          children: [
+            Container(
+              color: Color(0xFF1A0A5B), // dark purple background
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.menu, color: Colors.white),
+                      Row(
+                        children: [
+                          Icon(Icons.shopping_cart, color: Colors.white),
+                          SizedBox(width: 20),
+                          Icon(Icons.notifications, color: Colors.white),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/flyhubicon.svg',
+                        width: 65,
+                        height: 65,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.search),
+                      hintText: "Search drones, pilots, services...",
+                      suffixIcon: Icon(Icons.mic),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            ...preloadedWidgets,
+          ],
+        ),
+      ),
+    );
+  }
+
+  void preloadWidgets() async {
+    pref = await SharedPreferences.getInstance();
+    List<Widget> widgets = [];
+
+    for (var currentItem in homeData) {
+      switch (currentItem['template']) {
+        case 'template_1':
+          widgets.add(Template1(items: currentItem['items']));
+          break;
+        case 'template_2':
+          widgets.add(
+            Template2(
+              title : currentItem['title'],
+              appBar_title: currentItem['form_top'],
+              form_title: currentItem['form_title'],
+              rightImg: currentItem['right_img'],
+              leftImg: currentItem['left_img'],
+              items: currentItem['items'],
+            ),
+          );
+          break;
+        case 'template_3':
+          widgets.add(
+            Template3(
+              featureTitle: currentItem['title'] ?? '',
+              featuredDrones: currentItem['items'],
+            ),
+          );
+          break;
+
+        default:
+          widgets.add(SizedBox.shrink());
+          break;
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        preloadedWidgets = widgets;
+      });
+    }
+  }
+
+  Future<dynamic> gethomedata() async {
+    if (await Utils.checkInternetConnection()) {
+      isInternet = true;
+      isLoading = true;
+      var response = await _apiClass.gethomedata();
+      if (response["status"] == "success") {
+        homeData = response["items"];
+        isLoading = false;
+        setState(() {});
+      }
+      preloadWidgets();
+    } else {
+      isInternet = false;
+      Utils.bottomtoast(context, "Check your Internet Connection");
+    }
+  }
+
+}
+
+/*ListView(
           children: [
             Container(
               color: Colors.indigo[900],
@@ -65,16 +181,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(width: 20),
                           Icon(Icons.notifications, color: Colors.white),
                         ],
-                      )
-
+                      ),
                     ],
                   ),
                   SizedBox(height: 20),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center, // Horizontal center
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // Horizontal center
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset('assets/images/flyhubicon.svg',
+                      SvgPicture.asset(
+                        'assets/images/flyhubicon.svg',
                         width: 65,
                         height: 65,
                       ),
@@ -88,34 +205,48 @@ class _HomeScreenState extends State<HomeScreen> {
                       prefixIcon: Icon(Icons.search),
                       hintText: "Search drones, pilots, services...",
                       suffixIcon: Icon(Icons.mic),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+
+            //Template 1 Design
             GridView.count(
               padding: EdgeInsets.all(16),
               crossAxisCount: 4,
               childAspectRatio: 0.7,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              children: categories.map((c) => CategoryTile(icon: c['image'], label: c['cname'])).toList(),
+              children: categories
+                  .map((c) => CategoryTile(icon: c['image'], label: c['cname']))
+                  .toList(),
             ),
 
+            //Template 2 Design
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.network(icon1, width: 24, height: 24, fit: BoxFit.contain),
+                    Image.network(
+                      icon1,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
                     SizedBox(width: 8),
                     Text(
                       textdata,
@@ -124,26 +255,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-
                       ),
                     ),
                     SizedBox(width: 8),
-                    Image.network(icon2, width: 24, height: 24, fit: BoxFit.contain),
+                    Image.network(
+                      icon2,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
                   ],
                 ),
               ),
             ),
 
-
+            //Template 3 Design
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              child: Text("${feature}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              child: Text(
+                "${feature}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
-
             GridView.count(
               padding: EdgeInsets.all(16),
               crossAxisCount: 2,
-              childAspectRatio: 0.75, // Adjust as needed for extra text height
+              childAspectRatio: 0.75,
+              // Adjust as needed for extra text height
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               mainAxisSpacing: 16,
@@ -163,8 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }).toList(),
             ),
 
-            //DroneCard(drone: featuredDrones[index]),
-            // Pesticide Spraying Banner
+            //Template 4 Design
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
@@ -179,10 +316,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Pesticide Spraying ", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text(
+                            "Pesticide Spraying ",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           SizedBox(height: 4),
-                          Text("Farmers can hire drone service from service providers on a pay-per-use model.",
-                              style: TextStyle(color: Colors.white70, fontSize: 12)),
+                          Text(
+                            "Farmers can hire drone service from service providers on a pay-per-use model.",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -193,25 +341,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-// Top Rated Pilots
+            //Template 5 Design
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text("Top Rated Pilots", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: Text(
+                "Top Rated Pilots",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
             ListView(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                PilotTile(name: "Amirthakumar AK", role: "Aerial Photography Specialist", imagePath: "assets/images/flyHub_logo.svg", rating: 4.5),
-                PilotTile(name: "Jeevanantham P", role: "Real Estate & Construction Expert", imagePath: "assets/images/flyHub_logo.svg", rating: 4.0),
-                PilotTile(name: "Aravinth", role: "Cinematography & Film Production", imagePath: "assets/images/flyHub_logo.svg", rating: 5.0),
+                PilotTile(
+                  name: "Amirthakumar AK",
+                  role: "Aerial Photography Specialist",
+                  imagePath: "assets/images/flyHub_logo.svg",
+                  rating: 4.5,
+                ),
+                PilotTile(
+                  name: "Jeevanantham P",
+                  role: "Real Estate & Construction Expert",
+                  imagePath: "assets/images/flyHub_logo.svg",
+                  rating: 4.0,
+                ),
+                PilotTile(
+                  name: "Aravinth",
+                  role: "Cinematography & Film Production",
+                  imagePath: "assets/images/flyHub_logo.svg",
+                  rating: 5.0,
+                ),
               ],
             ),
 
-            // Upcoming Events
+            //Template 6 Design
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text("Upcoming Events (News)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: Text(
+                "Upcoming Events (News)",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -220,16 +389,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.white,
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.shade300, blurRadius: 5, offset: Offset(0, 2))
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 5,
+                      offset: Offset(0, 2),
+                    ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-
                       borderRadius: BorderRadius.only(
-
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
                       ),
@@ -237,7 +408,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: double.infinity,
                         child: Image.asset(
                           "assets/images/MaskGroup38@2x.png",
-                          fit: BoxFit.cover, // ensures it fills the width without distortion
+                          fit: BoxFit
+                              .cover, // ensures it fills the width without distortion
                         ),
                       ),
                     ),
@@ -246,22 +418,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("International Drone Racing Championship",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            "International Drone Racing Championship",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.calendar_month, size: 16, color: Colors.grey),
+                              Icon(
+                                Icons.calendar_month,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
                               SizedBox(width: 6),
-                              Text("June 30, 2025")
+                              Text("June 30, 2025"),
                             ],
                           ),
                           SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.location_on, size: 16, color: Colors.grey),
+                              Icon(
+                                Icons.location_on,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
                               SizedBox(width: 6),
-                              Text("San Francisco, CA")
+                              Text("San Francisco, CA"),
                             ],
                           ),
                           SizedBox(height: 8),
@@ -273,23 +455,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                 backgroundColor: Colors.deepPurple,
                                 shape: StadiumBorder(),
                               ),
-                              child: Text("Register Now",style: TextStyle(color:  Colors.white),),
+                              child: Text(
+                                "Register Now",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
-                          )
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
             SizedBox(height: 20),
 
-
-            // Drone Rentals Section
+            //Template 7 Design
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text("Drone Rentals", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: Text(
+                "Drone Rentals",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -297,7 +484,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Expanded(
                     child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -306,31 +495,54 @@ class _HomeScreenState extends State<HomeScreen> {
                               topLeft: Radius.circular(12),
                               topRight: Radius.circular(12),
                             ),
-                            child: Image.asset("assets/images/MaskGroup34@2x.png", height: 100, width: double.infinity, fit: BoxFit.cover),
+                            child: Image.asset(
+                              "assets/images/MaskGroup34@2x.png",
+                              height: 100,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("DJI Mini 3 Pro", style: TextStyle(fontWeight: FontWeight.bold)),
+                                Text(
+                                  "DJI Mini 3 Pro",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 Text("4K Camera, 38min Flight"),
                                 SizedBox(height: 4),
-                                Text("₹800/hour", style: TextStyle(color: Colors.orange)),
-                                Text("₹2,500/day", style: TextStyle(color: Colors.deepPurple)),
+                                Text(
+                                  "₹800/hour",
+                                  style: TextStyle(color: Colors.orange),
+                                ),
+                                Text(
+                                  "₹2,500/day",
+                                  style: TextStyle(color: Colors.deepPurple),
+                                ),
                                 Text("Insurance ✅"),
                                 SizedBox(height: 6),
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {},
-                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-                                    child: Text("Book Now", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.white)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.deepPurple,
+                                    ),
+                                    child: Text(
+                                      "Book Now",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -338,7 +550,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(width: 12),
                   Expanded(
                     child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -347,35 +561,58 @@ class _HomeScreenState extends State<HomeScreen> {
                               topLeft: Radius.circular(12),
                               topRight: Radius.circular(12),
                             ),
-                            child: Image.asset("assets/images/MaskGroup38@2x.png", height: 100, width: double.infinity, fit: BoxFit.cover),
+                            child: Image.asset(
+                              "assets/images/MaskGroup38@2x.png",
+                              height: 100,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Mavic Air 2", style: TextStyle(fontWeight: FontWeight.bold)),
+                                Text(
+                                  "Mavic Air 2",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 Text("4K Camera, 34min Flight"),
                                 SizedBox(height: 4),
-                                Text("₹800/hour", style: TextStyle(color: Colors.orange)),
-                                Text("₹2,500/day", style: TextStyle(color: Colors.deepPurple)),
+                                Text(
+                                  "₹800/hour",
+                                  style: TextStyle(color: Colors.orange),
+                                ),
+                                Text(
+                                  "₹2,500/day",
+                                  style: TextStyle(color: Colors.deepPurple),
+                                ),
                                 Text("Insurance ✅"),
                                 SizedBox(height: 6),
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {},
-                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-                                    child: Text("Book Now", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.white)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.deepPurple,
+                                    ),
+                                    child: Text(
+                                      "Book Now",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -383,60 +620,4 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 20),
           ],
         ),
-      ),
-    );
-  }
-
-
-  void preloadWidgets() async {
-
-    List<Widget> widgets = [];
-    for (int i = 0; i < data.length; i++) {
-      var currentItem = data[i];
-      // Ensure every widget gets a unique key
-      switch (currentItem['template']) {
-        case 'template_1':{
-          categories=currentItem['items'];
-          print('Response: ${currentItem['items']}');
-        }
-        case 'template_2':{
-           icon1=currentItem['right_img'];
-           icon2=currentItem['left_img'];
-           textdata=currentItem['title'];
-           print('Response: ${currentItem['right_img']}');
-           print('Response: ${currentItem['left_img']}');
-           print('Response: ${currentItem['items']}');
-        }
-        case 'template_3':{
-          feature=currentItem['title'];
-          featuredDrones=currentItem['items'];
-          print('Response: ${currentItem['title']}');
-          print('Response: ${currentItem['items']}');
-        }
-        switch (currentItem['type']) {
-          case 'type1':
-          case 'type2':
-          case 'type3':
-          case 'type4':
-        }
-        break;
-
-        default:
-          widgets.add(Container());
-          break;
-      }
-    }
-  }
-
-
-  Future<dynamic> gethomedata() async {
-    if (await Utils.checkInternetConnection()) {
-      isInternet = true;
-      data = await _apiClass.gethomedata();
-      preloadWidgets();
-    } else {
-      isInternet = false;
-    }
-  }
-
-}
+      */

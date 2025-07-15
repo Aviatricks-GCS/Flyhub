@@ -21,6 +21,7 @@ class DroneCard extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: Colors.white,
       elevation: 3,
       child: Container(
         width: cardWidth,

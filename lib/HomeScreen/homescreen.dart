@@ -151,8 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response["status"] == "success") {
         homeData = response["items"];
         isLoading = false;
+        setState(() {});
       }
-      setState(() {});
       preloadWidgets();
     } else {
       isInternet = false;

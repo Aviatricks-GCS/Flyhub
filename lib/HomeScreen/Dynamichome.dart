@@ -31,9 +31,12 @@ class _dynamichomeState extends State<dynamichome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: _screens[_selectedIndex],
 
       bottomNavigationBar: BottomNavigationBar(
+        elevation: 20,
+        backgroundColor: Colors.white,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,

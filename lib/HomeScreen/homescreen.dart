@@ -1,19 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flyhub/Template/Template1.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../CommonClass/ApiClass.dart';
 import '../CommonClass/Utils.dart';
 import '../Template/Template2.dart';
 import '../Template/Template3.dart';
-import '../buildPilotTile.dart';
-import '../category_tile.dart';
-
-import '../drone_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -154,16 +147,20 @@ class _HomeScreenState extends State<HomeScreen> {
     if (await Utils.checkInternetConnection()) {
       isInternet = true;
       isLoading = true;
-      homeData = await _apiClass.gethomedata();
-      isLoading = false;
+      var response = await _apiClass.gethomedata();
+      if (response["status"] == "success") {
+        homeData = response["items"];
+        isLoading = false;
+      }
       setState(() {});
       preloadWidgets();
     } else {
       isInternet = false;
+      Utils.bottomtoast(context, "Check your Internet Connection");
     }
   }
-}
 
+}
 
 /*ListView(
           children: [
@@ -622,4 +619,3 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       */
-

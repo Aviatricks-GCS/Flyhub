@@ -77,7 +77,7 @@ class _MarketPageState extends State<MarketPage> {
 
   Widget _buildFilterChip(String label) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       margin: EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -99,7 +99,7 @@ class _MarketPageState extends State<MarketPage> {
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.75,
               children: [
                 MarketItemCard(image: "assets/images/MaskGroup38@2x.png", name: "DJI Mini 3 Pro", price: "₹25,500"),
                 MarketItemCard(image: "assets/images/MaskGroup34@2x.png", name: "Mavic Air 2", price: "₹52,500"),

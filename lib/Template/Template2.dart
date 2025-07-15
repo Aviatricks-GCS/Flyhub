@@ -20,35 +20,40 @@ class Template2 extends StatefulWidget {
 class _Template2State extends State<Template2> {
   @override
   Widget build(BuildContext context) {
-
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.deepPurple,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8)),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      child: Container(
+        width: double.infinity,
+        //height: height * 0.06,
+        decoration: BoxDecoration(
+          color: Color(0xFF7057FF),
+          borderRadius: BorderRadius.circular(12),
         ),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
-          //mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(widget.leftImg, width: 10, height: 10),
-            SizedBox(width: 8),
+            Image.network(widget.leftImg, width: 30, height: 30),
+
             SizedBox(
-              width: width * 0.65 ,
+              width: width * 0.65,
               child: Text(
                 widget.title,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white,overflow: TextOverflow.ellipsis),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                maxLines: 2,
               ),
             ),
-            SizedBox(width: 8),
-            Image.network(widget.rightImg, width: 24, height: 24),
+
+            Image.network(widget.rightImg, width: 25, height: 25),
           ],
         ),
       ),

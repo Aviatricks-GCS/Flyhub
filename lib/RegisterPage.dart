@@ -43,14 +43,28 @@ class RegisterPage extends StatelessWidget {
               return InkWell(
                 onTap: () {
                   if (item["status"] == "success") {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Adddrone(clickUrl: item["click_url"]),
-                      ),
-                    );
-                  } else {}
+
+                    if(item["click_url"] == "add_drone_sell"){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Adddrone(clickUrl: item["click_url"],type : "1"),
+                        ),
+                      );
+                    }else if (item["click_url"] == "add_drone_rent") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Adddrone(clickUrl: item["click_url"],type : "2"),
+                        ),
+                      );
+                    }
+
+                  } else {
+
+                  }
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 6),
@@ -67,13 +81,29 @@ class RegisterPage extends StatelessWidget {
                       ),
                       label: Text(item['right_text']),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                Adddrone(clickUrl: item['click_url']),
-                          ),
-                        );
+                        if (item["status"] == "success") {
+
+                          if(item["click_url"] == "add_drone_sell"){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Adddrone(clickUrl: item["click_url"],type : "1"),
+                              ),
+                            );
+                          }else if (item["click_url"] == "add_drone_rent") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Adddrone(clickUrl: item["click_url"],type : "2"),
+                              ),
+                            );
+                          }
+
+                        } else {
+
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(

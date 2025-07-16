@@ -166,7 +166,8 @@ class _OtpScreenState extends State<OtpScreen> {
                               children: [
                                 Text.rich(
                                   TextSpan(
-                                    text: '${widget.logindata['verify_page']['title2']} ',
+                                    text:
+                                        '${widget.logindata['verify_page']['title2']} ',
                                     style: GoogleFonts.lexend(
                                       color: Colors.black87,
                                       fontSize: w * 0.035,
@@ -236,59 +237,53 @@ class _OtpScreenState extends State<OtpScreen> {
 
                             SizedBox(height: h * 0.06),
 
-
-
                             SizedBox(
                               width: w * 0.8,
                               height: h * 0.065,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                    if (await Utils.checkInternetConnection()) {
-                                      setState(() {
-                                        isLoading = true; // Show loader
-                                      });
+                                  if (await Utils.checkInternetConnection()) {
+                                    setState(() {
+                                      isLoading = true; // Show loader
+                                    });
 
-                                      isInternet = true;
+                                    isInternet = true;
 
+                                    pref =
+                                        await SharedPreferences.getInstance();
 
+                                    var response = await _apiClass.verifyOTP(
+                                      _pinController.text,
+                                    );
+                                    setState(() {
+                                      isLoading = false; // Hide loader
+                                    });
+                                    if (response["status"] == "success") {
+                                      pref.setBool("OTP_completed", true);
 
-                                      pref =
-                                      await SharedPreferences.getInstance();
-
-                                      var response = await _apiClass.verifyOTP(
-                                        _pinController.text,
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => dynamichome(),
+                                        ),
                                       );
-                                      setState(() {
-                                        isLoading = false; // Hide loader
-                                      });
-                                      if (response["status"] == "success")  {
-                                        pref.setBool("OTP_completed", true);
-
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => dynamichome(),
-                                          ),
-                                        );
-                                        Utils.bottomtoast(
-                                          context,
-                                          "${widget.logindata['verify_page']['otp_success']}'",
-                                        );
-                                      } else {
-                                        Utils.bottomtoast(
-                                          context,
-                                          "${widget.logindata['verify_page']['otp_error']}'",
-                                        );
-                                      }
-                                    } else {
-                                      isInternet = false;
                                       Utils.bottomtoast(
                                         context,
-                                        "Check Your Internet Connection",
+                                        "${widget.logindata['verify_page']['otp_success']}'",
+                                      );
+                                    } else {
+                                      Utils.bottomtoast(
+                                        context,
+                                        "${widget.logindata['verify_page']['otp_error']}'",
                                       );
                                     }
-
+                                  } else {
+                                    isInternet = false;
+                                    Utils.bottomtoast(
+                                      context,
+                                      "Check Your Internet Connection",
+                                    );
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF7049EC),
@@ -298,33 +293,34 @@ class _OtpScreenState extends State<OtpScreen> {
                                 ),
                                 child: isLoading
                                     ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${widget.logindata['verify_page']['button_name']}',
-                                      style: GoogleFonts.lexend(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2.5,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '${widget.logindata['verify_page']['button_name']}',
+                                            style: GoogleFonts.lexend(
+                                              fontSize: 18,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const SizedBox(
+                                            width: 18,
+                                            height: 18,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.5,
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     : Text(
-                                  '${widget.logindata['verify_page']['button_name']}',
-                                  style: GoogleFonts.lexend(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                        '${widget.logindata['verify_page']['button_name']}',
+                                        style: GoogleFonts.lexend(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                               ),
                             ),
 
@@ -346,6 +342,40 @@ class _OtpScreenState extends State<OtpScreen> {
                                   : null, // disables tap while timer is active
                               child: Text.rich(
                                 TextSpan(
+                                  text: 'Resend OTP ',
+                                  //text: '${widget.logindata['verify_page']['title3']}',
+                                  style: GoogleFonts.lexend(
+                                    color: _secondsRemaining > 0
+                                        ? Colors.black38
+                                        : Colors.black,
+                                    fontSize: w * 0.04,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: _secondsRemaining > 0
+                                      ? [
+                                          TextSpan(
+                                            text: 'after ',
+                                            style: GoogleFonts.lexend(
+                                              color: Colors.black38,
+                                              fontSize: w * 0.035,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '${_secondsRemaining.toString()} sec',
+                                            style: GoogleFonts.lexend(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: w * 0.035,
+                                            ),
+                                          ),
+                                        ]
+                                      : [],
+                                ),
+                              ),
+
+                              /*Text.rich(
+                                TextSpan(
                                   text: '${widget.logindata['verify_page']['title3']}',
                                   style: GoogleFonts.lexend(
                                     color: _secondsRemaining > 0
@@ -356,7 +386,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   ),
 
                                 ),
-                              ),
+                              ),*/
                             ),
                           ],
                         ),

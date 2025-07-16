@@ -349,11 +349,12 @@ class ApiClass {
     String batteryCapacity,
     String weight,
     String model,
-    String hours,
-    String minutes,
-    String flyingTime,
-    String chargingTime,
+    String f_hours,
+    String f_minutes,
+    String c_hours,
+    String c_minutes,
     String description,
+    String type,
     Map<String, File?> images,
   ) async {
     pref = await SharedPreferences.getInstance();
@@ -367,25 +368,25 @@ class ApiClass {
       "user_id": userId,
       "DGCA_approval": dgcaApproval,
       "model": model,
-      "type": "2",
+      "type": type,
       "purpose": selectedPurposeId,
-      "charging_time": "$hours h : $minutes m",
-      "flying_time": flyingTime,
+      "charging_time": "$f_hours h : $f_minutes m",
+      "flying_time": "$c_hours h : $c_minutes m",
       "rental_terms": description,
       "price": amount,
       "tags": "",
-      "discounts": "1000",
+      "discounts": "",
       "drone_weight": weight,
       "battery_capacity": batteryCapacity,
-      "lat": "5",
-      "long": "50",
-      "ratings": "5",
-      "price_type": "2",
+      "lat": "",
+      "long": "",
+      "ratings": "",
+      "price_type": "",
       "availability": "",
-      "insurance_details": "testing insurance",
-      "damage_report": "testing damage",
-      "pickup_location": "Tiruchengode",
-      "delivery_method": "testing",
+      "insurance_details": "",
+      "damage_report": "",
+      "pickup_location": "",
+      "delivery_method": "",
     });
 
     // Map your image field keys
@@ -411,7 +412,6 @@ class ApiClass {
         }
       }
     }
-
 
     print("Request Data From LoginData : ${request.fields}");
 

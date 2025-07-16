@@ -3,14 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flyhub/CommonClass/Utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'CommonClass/ApiClass.dart';
 
 class Adddrone extends StatefulWidget {
   final String clickUrl;
+  final String type;
 
-  Adddrone({required this.clickUrl});
+  Adddrone({required this.clickUrl, required this.type});
 
   @override
   State<Adddrone> createState() => _AdddroneState();
@@ -37,14 +39,16 @@ class _AdddroneState extends State<Adddrone> {
     'full': null,
   };
 
-  final TextEditingController amountController = TextEditingController();
+  String selectedUnit = 'Kgs';
+  final List<String> units = ['Kgs', 'Grams'];
+
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController uAN_numberController = TextEditingController();
   final TextEditingController batteryController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController modelController = TextEditingController();
-  final TextEditingController minutesController = TextEditingController();
-  final TextEditingController hoursController = TextEditingController();
-  final TextEditingController flyingTimeController = TextEditingController();
-  final TextEditingController chargingTimeController = TextEditingController();
+  final TextEditingController f_minutesController = TextEditingController();
+  final TextEditingController f_hoursController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
   final TextEditingController c_minutesController = TextEditingController();
@@ -78,14 +82,33 @@ class _AdddroneState extends State<Adddrone> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text('Add My Drone'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56),
+        child: SafeArea(
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black.withOpacity(0.4),
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Text(
+                    'Add My Drone',
+                    style: GoogleFonts.lexend(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-        elevation: 0,
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(16),
@@ -99,15 +122,16 @@ class _AdddroneState extends State<Adddrone> {
             var response = await _apiClass.addDrone(
               dgcaApproval,
               selectedPurposeId.toString(),
-              amountController.text,
+              priceController.text,
               batteryController.text,
               weightController.text,
               modelController.text,
-              hoursController.text,
-              minutesController.text,
-              flyingTimeController.text,
-              chargingTimeController.text,
+              f_hoursController.text,
+              f_minutesController.text,
+              c_minutesController.text,
+              c_hoursController.text,
               descriptionController.text,
+              widget.type,
               fileImages,
             );
 
@@ -116,7 +140,7 @@ class _AdddroneState extends State<Adddrone> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.deepPurple,
+            backgroundColor: Color(0xff7057FF),
             padding: EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -124,17 +148,27 @@ class _AdddroneState extends State<Adddrone> {
           ),
           child: Text(
             "Continue",
-            style: TextStyle(fontSize: 16, color: Colors.white),
+            style: GoogleFonts.lexend(fontSize: 16, color: Colors.white),
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16, 8, 16, 80),
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
         // Extra bottom padding for button
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Do you have DGCA Approval *"),
+            Text(
+              "Do you have DGCA Approval *",
+              style: GoogleFonts.lexend(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+
+            SizedBox(height: 5),
+
             Row(
               children: [
                 Radio(
@@ -146,7 +180,14 @@ class _AdddroneState extends State<Adddrone> {
                     });
                   },
                 ),
-                Text("Yes"),
+                Text(
+                  "Yes",
+                  style: GoogleFonts.lexend(
+                    fontSize: 15,
+                    fontWeight: dgcaApproval == "1" ? FontWeight.bold : null,
+                    color: Colors.black,
+                  ),
+                ),
                 Radio(
                   value: '0',
                   groupValue: dgcaApproval,
@@ -156,12 +197,70 @@ class _AdddroneState extends State<Adddrone> {
                     });
                   },
                 ),
-                Text("No"),
+                Text(
+                  "No",
+                  style: GoogleFonts.lexend(
+                    fontSize: 15,
+                    fontWeight: dgcaApproval == "0" ? FontWeight.bold : null,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
 
             SizedBox(height: 15),
-            Text("Drone Purpose *"),
+
+            TextField(
+              controller: uAN_numberController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: 'Unique Authorization No. (UAN) * ',
+                labelStyle: GoogleFonts.lexend(
+                  //fontWeight: FontWeight.bold,
+                  color: Colors.black, // Unfocused label color
+                ),
+                hintText: "eg.ABCDEFGH1234IJKLMNOP",
+                hintStyle: GoogleFonts.lexend(
+                    color: Color(0xFFBBBBBB)
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.black, // Focused border color
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFBBBBBB), // Unfocused border color
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+
+                counterText: "",
+
+              ),
+              maxLines: 1,
+              maxLength: 7,
+            ),
+
+            SizedBox(height: 15),
+            Text(
+              "Drone Purpose *",
+              style: GoogleFonts.lexend(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+
+            SizedBox(height: 5),
+
             Column(
               children: dronePurposeList.map<Widget>((item) {
                 return buildRadioOption(item['cname'], item['id']);
@@ -171,24 +270,37 @@ class _AdddroneState extends State<Adddrone> {
             SizedBox(height: 15),
 
             TextField(
-              controller: amountController,
+              controller: priceController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 labelText: 'Price * ',
-                labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
+                labelStyle: GoogleFonts.lexend(
+                  //fontWeight: FontWeight.bold,
                   color: Colors.black, // Unfocused label color
+                ),
+                hintText: "eg.900000 ₹",
+                hintStyle: GoogleFonts.lexend(
+                    color: Color(0xFFBBBBBB)
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xFFC2C2C2), // Focused border color
+                    color: Colors.black, // Focused border color
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFBBBBBB), // Unfocused border color
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+
                 counterText: "",
                 suffixText: "₹",
               ),
@@ -201,18 +313,30 @@ class _AdddroneState extends State<Adddrone> {
             TextField(
               controller: batteryController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 labelText: 'Drone Battery Capacity *',
-                labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
+                labelStyle: GoogleFonts.lexend(
+                  //fontWeight: FontWeight.bold,
                   color: Colors.black, // Unfocused label color
+                ),
+                hintText: "eg.22000 mAh",
+                hintStyle: GoogleFonts.lexend(
+                    color: Color(0xFFBBBBBB)
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xFFC2C2C2), // Focused border color
+                    color: Colors.black, // Focused border color
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFBBBBBB), // Unfocused border color
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -226,30 +350,54 @@ class _AdddroneState extends State<Adddrone> {
 
             SizedBox(height: 15),
 
-            TextField(
-              controller: weightController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Drone Weight * ',
-                labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black, // Unfocused label color
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xFFC2C2C2), // Focused border color
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                counterText: "",
-                suffixText: "Kgs",
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Color(0xFFBBBBBB)),
+                borderRadius: BorderRadius.circular(8),
               ),
-              maxLines: 1,
-              maxLength: 2,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: weightController,
+                      keyboardType: TextInputType.number,
+                      maxLength: 2,
+                      decoration: InputDecoration(
+                        labelText: 'Drone Weight *',
+                        labelStyle: GoogleFonts.lexend(
+                          color: Colors.black,
+                        ),
+                        hintText: "eg. 25",
+                        hintStyle: GoogleFonts.lexend(
+                          color: Color(0xFFBBBBBB),
+                        ),
+
+                        border: InputBorder.none,
+                        counterText: "",
+                      ),
+                    ),
+                  ),
+                  DropdownButton<String>(
+                    //padding: EdgeInsets.zero,
+                    value: selectedUnit,
+                    underline: SizedBox(),
+                    dropdownColor: Colors.grey[100],
+                    items: units.map((unit) {
+                      return DropdownMenuItem(
+                        value: unit,
+                        child: Text(unit, style: GoogleFonts.lexend(fontSize: 14)),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedUnit = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
 
             SizedBox(height: 15),
@@ -259,16 +407,27 @@ class _AdddroneState extends State<Adddrone> {
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 labelText: 'Drone Model Name * ',
-                labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
+                labelStyle: GoogleFonts.lexend(
+                  //fontWeight: FontWeight.bold,
                   color: Colors.black, // Unfocused label color
+                ),
+                hintText: "eg.DJ Mini 4 Pro",
+                hintStyle: GoogleFonts.lexend(
+                    color: Color(0xFFBBBBBB)
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xFFC2C2C2), // Focused border color
+                    color: Colors.black, // Focused border color
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFBBBBBB), // Unfocused border color
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -281,9 +440,16 @@ class _AdddroneState extends State<Adddrone> {
 
             SizedBox(height: 15),
 
-            Text("Drone Flying Time *"),
+            Text(
+              "Drone Flying Time *",
+              style: GoogleFonts.lexend(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
 
-            SizedBox(height: 10),
+            SizedBox(height: 15),
 
             Row(
               children: [
@@ -291,32 +457,59 @@ class _AdddroneState extends State<Adddrone> {
                 SizedBox(
                   width: 50,
                   child: TextField(
-                    controller: hoursController,
+                    controller: f_hoursController,
                     keyboardType: TextInputType.number,
                     maxLength: 2,
                     decoration: InputDecoration(
                       counterText: "",
                       contentPadding: EdgeInsets.symmetric(
                         vertical: 10,
-                        horizontal: 8,
+                        horizontal: 12,
                       ),
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+
+                      ),
+                      hintText: "00",
+                      hintStyle: GoogleFonts.lexend(
+                        color: Color(0xFFBBBBBB),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black, // Focused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFFBBBBBB), // Unfocused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
 
-                SizedBox(width: 5),
+                SizedBox(width: 10),
 
                 // 'h' label
-                Text("hrs", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  "hrs",
+                  style: GoogleFonts.lexend(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
 
-                SizedBox(width: 15),
+                SizedBox(width: 35),
 
                 // Minutes TextField
                 SizedBox(
                   width: 50,
                   child: TextField(
-                    controller: minutesController,
+                    controller: f_minutesController,
                     keyboardType: TextInputType.number,
                     maxLength: 2,
                     decoration: InputDecoration(
@@ -326,6 +519,24 @@ class _AdddroneState extends State<Adddrone> {
                         horizontal: 8,
                       ),
                       border: OutlineInputBorder(),
+                      hintText: "00",
+                      hintStyle: GoogleFonts.lexend(
+                        color: Color(0xFFBBBBBB),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black, // Focused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFFBBBBBB), // Unfocused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
@@ -333,13 +544,27 @@ class _AdddroneState extends State<Adddrone> {
                 SizedBox(width: 5),
 
                 // 'm' label
-                Text("mins", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  "mins",
+                  style: GoogleFonts.lexend(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
 
             SizedBox(height: 15),
 
-            Text("Drone Charging Time *"),
+            Text(
+              "Drone Charging Time *",
+              style: GoogleFonts.lexend(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
 
             SizedBox(height: 10),
 
@@ -359,6 +584,24 @@ class _AdddroneState extends State<Adddrone> {
                         horizontal: 8,
                       ),
                       border: OutlineInputBorder(),
+                      hintText: "00",
+                      hintStyle: GoogleFonts.lexend(
+                        color: Color(0xFFBBBBBB),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black, // Focused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFFBBBBBB), // Unfocused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
@@ -366,9 +609,16 @@ class _AdddroneState extends State<Adddrone> {
                 SizedBox(width: 5),
 
                 // 'h' label
-                Text("hrs", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  "hrs",
+                  style: GoogleFonts.lexend(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
 
-                SizedBox(width: 15),
+                SizedBox(width: 35),
 
                 // Minutes TextField
                 SizedBox(
@@ -384,6 +634,24 @@ class _AdddroneState extends State<Adddrone> {
                         horizontal: 8,
                       ),
                       border: OutlineInputBorder(),
+                      hintText: "00",
+                      hintStyle: GoogleFonts.lexend(
+                        color: Color(0xFFBBBBBB),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black, // Focused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFFBBBBBB), // Unfocused border color
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
@@ -391,45 +659,74 @@ class _AdddroneState extends State<Adddrone> {
                 SizedBox(width: 5),
 
                 // 'm' label
-                Text("mins", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  "mins",
+                  style: GoogleFonts.lexend(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
 
-            SizedBox(height: 15),
+            SizedBox(height: 20),
 
             TextField(
               controller: descriptionController,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.multiline,
+              maxLines: 4,
+              maxLength: 250, // Set appropriate limit
               decoration: InputDecoration(
-                labelText: 'Drone Description * ',
-                labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black, // Unfocused label color
+                labelText: 'Drone Description',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                labelStyle: GoogleFonts.lexend(
+                  color: Colors.black,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color(0xFFC2C2C2), // Focused border color
+                    color: Color(0xFFC2C2C2),
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xFFBBBBBB),
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 counterText: "",
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 12,
+                ),
               ),
-              maxLines: 1,
-              maxLength: 7,
             ),
 
-            SizedBox(height: 15),
+            SizedBox(height: 18),
 
             Text(
               "Add Drone Photo *",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: GoogleFonts.lexend(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
 
-            Text("Upload Drone Photos From all sides *"),
+            Text(
+              "Upload Drone Photos From all sides",
+              style: GoogleFonts.lexend(
+                fontSize: 12,
+                //fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
 
             SizedBox(height: 12),
 
@@ -441,10 +738,10 @@ class _AdddroneState extends State<Adddrone> {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
               children: [
-                buildImageUploadBox('top', 'Top Angle Drone Image *'),
-                buildImageUploadBox('right', 'Right Angle Drone Image *'),
-                buildImageUploadBox('left', 'Left Angle Drone Image *'),
-                buildImageUploadBox('full', 'Upload Drone Image *'),
+                buildImageUploadBox('top', 'Upload Full Image *'),
+                buildImageUploadBox('right', 'Top Angle Image'),
+                buildImageUploadBox('left', 'Right Angle Image'),
+                buildImageUploadBox('full', 'Left Angle Image'),
               ],
             ),
           ],
@@ -454,18 +751,40 @@ class _AdddroneState extends State<Adddrone> {
   }
 
   Widget buildRadioOption(String label, int id) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(label),
-      leading: Radio<String>(
-        value: label,
-        groupValue: selectedPurposeName,
-        onChanged: (val) {
-          setState(() {
-            selectedPurposeName = val!;
-            selectedPurposeId = id;
-          });
-        },
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedPurposeName = label;
+          selectedPurposeId = id;
+        });
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Radio<String>(
+            value: label,
+            visualDensity: VisualDensity(vertical: 1),
+            // reduce space around radio
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            // shrink hit area
+            groupValue: selectedPurposeName,
+            onChanged: (val) {
+              setState(() {
+                selectedPurposeName = val!;
+                selectedPurposeId = id;
+              });
+            },
+          ),
+
+          Text(
+            label,
+            style: GoogleFonts.lexend(
+              fontSize: 15,
+              fontWeight: selectedPurposeId == id ? FontWeight.bold : null,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -528,14 +847,25 @@ class _AdddroneState extends State<Adddrone> {
                 children: [
                   Icon(
                     Icons.cloud_upload_outlined,
-                    size: 36,
-                    color: Colors.grey,
+                    size: 34,
+                    color: Color(0xffBBBBBB),
                   ),
                   SizedBox(height: 8),
-                  Text("Upload", style: TextStyle(color: Colors.grey)),
+                  Text(
+                    "Upload",
+                    style: GoogleFonts.lexend(
+                      fontSize: 13,
+                      //fontWeight: FontWeight.bold,
+                      color: Color(0xffBBBBBB),
+                    ),
+                  ),
                   Text(
                     label,
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                    style: GoogleFonts.lexend(
+                      fontSize: 13,
+                      //fontWeight: FontWeight.bold,
+                      color: Color(0xffBBBBBB),
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],

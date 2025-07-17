@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flyhub/Template/Template1.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../CommonClass/ApiClass.dart';
@@ -80,15 +82,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: Icon(Icons.search),
-                      hintText: "Search drones, pilots, services...",
-                      suffixIcon: Icon(Icons.mic),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      style: GoogleFonts.lexend(fontSize: 14),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.search, size: 20),
+                        hintText: "Search drones,pilots,services...",
+                        hintStyle: GoogleFonts.lexend(fontSize: 14),
+                        suffixIcon: Icon(Icons.mic,size: 20,),
+                        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none
+                        ),
                       ),
                     ),
                   ),

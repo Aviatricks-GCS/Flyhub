@@ -35,7 +35,7 @@ class CategoryTile extends StatelessWidget {
                 width: 70,
                 child: Text(
                   label,
-                  style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 11,fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

@@ -264,7 +264,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => dynamichome(),
+                                          builder: (context) => Dynamichome(selectedIndex : 0),
                                         ),
                                       );
                                       Utils.bottomtoast(

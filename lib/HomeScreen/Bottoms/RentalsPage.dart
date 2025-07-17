@@ -28,12 +28,12 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
 
   Future<void> getDroneList() async {
     if (await Utils.checkInternetConnection()) {
-      var response = await _apiClass.getDroneList();
+      var response = await _apiClass.getDroneList("2");
       print('Response from getDroneList: $response');
 
       if (response != null && response['status'] == 'success') {
         setState(() {
-          droneList = response['data'] ?? [];
+          droneList = response['items'] ?? [];
         });
       } else {
         print("API did not return success");

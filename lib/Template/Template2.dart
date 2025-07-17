@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../RegisterPage.dart';
 
@@ -62,11 +63,11 @@ class _Template2State extends State<Template2> {
                 width: width * 0.65,
                 child: Text(
                   widget.title,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: GoogleFonts.lexend(
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    overflow: TextOverflow.ellipsis,
+                    textStyle: TextStyle(overflow: TextOverflow.ellipsis,),
                   ),
                   maxLines: 2,
                 ),

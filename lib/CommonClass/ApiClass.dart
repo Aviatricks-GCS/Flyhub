@@ -170,4 +170,32 @@ class ApiClass {
     }
     return responseData;
   }
+
+
+
+  Future<dynamic> getDroneList() async {
+    pref = await SharedPreferences.getInstance();
+    var responseData;
+    var _body = {"action": "getDroneList", "user_id": "2", "type": "2"};
+
+    var response = await http.post(Uri.parse(Utils.liveLocal_Url), body: _body);
+
+    print('Request data from gethomedata $_body');
+
+    try {
+      if (response.statusCode == 200) {
+        final responseBody = response.body;
+        responseData = json.decode(responseBody);
+        print('Response data from gethomedata $responseData');
+      } else {
+        print(
+          'Failed to load data. Server responded with status code: ${response.statusCode}',
+        );
+        throw Exception("Failed to load data for Internal Server Error");
+      }
+    } catch (e) {
+      print(e);
+    }
+    return responseData;
+  }
 }

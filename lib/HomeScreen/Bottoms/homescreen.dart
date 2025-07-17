@@ -151,11 +151,14 @@ class _HomeScreenState extends State<HomeScreen> {
       isInternet = true;
       isLoading = true;
       var response = await _apiClass.gethomedata();
-      if (response["status"] == "success") {
+      if (response["status"] == "success" && response["items"] is List) {
         homeData = response["items"];
         isLoading = false;
         setState(() {});
+      } else {
+        print("Unexpected data format: ${response['items']}");
       }
+
       preloadWidgets();
     } else {
       isInternet = false;

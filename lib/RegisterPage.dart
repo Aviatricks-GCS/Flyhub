@@ -42,7 +42,7 @@ class RegisterPage extends StatelessWidget {
             ...registerList.map((item) {
               return InkWell(
                 onTap: () {
-                  if (item["status"] == "success") {
+                  /*if (item["status"] == "success") {
 
                     if(item["click_url"] == "add_drone_sell"){
                       Navigator.push(
@@ -64,7 +64,7 @@ class RegisterPage extends StatelessWidget {
 
                   } else {
 
-                  }
+                  }*/
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 6),

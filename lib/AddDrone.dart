@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flyhub/CommonClass/Utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'CommonClass/ApiClass.dart';
 
@@ -32,12 +36,13 @@ class _AdddroneState extends State<Adddrone> {
 
   final picker = ImagePicker();
 
-  Map<String, XFile?> images = {
+  Map<String, File?> images = {
     'top': null,
     'right': null,
     'left': null,
     'full': null,
   };
+
 
   String selectedUnit = 'Kgs';
   final List<String> units = ['Kgs', 'Grams'];
@@ -54,25 +59,14 @@ class _AdddroneState extends State<Adddrone> {
   final TextEditingController c_minutesController = TextEditingController();
   final TextEditingController c_hoursController = TextEditingController();
 
+  late SharedPreferences pref;
+
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
     getPurpose();
-  }
-
-  Future<void> getPurpose() async {
-    var response = await _apiClass.getPurpose();
-    dronePurposeList = response["purpose_master"];
-    setState(() {});
-  }
-
-  Future<void> pickImage(String key) async {
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        images[key] = picked;
-      });
-    }
   }
 
   @override
@@ -152,7 +146,7 @@ class _AdddroneState extends State<Adddrone> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
         // Extra bottom padding for button
         child: Column(
@@ -750,6 +744,14 @@ class _AdddroneState extends State<Adddrone> {
     );
   }
 
+  Future<void> getPurpose() async {
+    isLoading = true;
+    var response = await _apiClass.getPurpose();
+    dronePurposeList = response["purpose_master"];
+    isLoading = false;
+    setState(() {});
+  }
+
   Widget buildRadioOption(String label, int id) {
     return GestureDetector(
       onTap: () {
@@ -835,44 +837,160 @@ class _AdddroneState extends State<Adddrone> {
 
   Widget buildImageUploadBox(String key, String label) {
     return InkWell(
-      onTap: () => pickImage(key),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildIconOption(
+                      icon: Icons.camera_alt,
+                      label: "Camera",
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        pickImage(key, ImageSource.camera);
+                      },
+                    ),
+                    _buildIconOption(
+                      icon: Icons.photo_library,
+                      label: "Gallery",
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        pickImage(key, ImageSource.gallery);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade400),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: images[key] == null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.cloud_upload_outlined,
-                    size: 34,
-                    color: Color(0xffBBBBBB),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Upload",
-                    style: GoogleFonts.lexend(
-                      fontSize: 13,
-                      //fontWeight: FontWeight.bold,
-                      color: Color(0xffBBBBBB),
-                    ),
-                  ),
-                  Text(
-                    label,
-                    style: GoogleFonts.lexend(
-                      fontSize: 13,
-                      //fontWeight: FontWeight.bold,
-                      color: Color(0xffBBBBBB),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )
-            : Image.file(File(images[key]!.path), fit: BoxFit.cover),
+        child: images[key] != null
+            ? Image.file(images[key]!, fit: BoxFit.cover)
+            : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.cloud_upload_outlined,
+              size: 34,
+              color: Color(0xffBBBBBB),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Upload",
+              style: GoogleFonts.lexend(
+                fontSize: 13,
+                //fontWeight: FontWeight.bold,
+                color: Color(0xffBBBBBB),
+              ),
+            ),
+            Text(
+              label,
+              style: GoogleFonts.lexend(
+                fontSize: 13,
+                //fontWeight: FontWeight.bold,
+                color: Color(0xffBBBBBB),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _buildIconOption({required IconData icon, required String label, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey),
+            ),
+            padding: EdgeInsets.all(12),
+            child: Icon(icon, size: 45),
+          ),
+          SizedBox(height: 10),
+          Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+
+  Future<void> pickImage(String key, ImageSource source) async {
+    final XFile? pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      File originalFile = File(pickedFile.path);
+
+      File? cropped = await cropImage(originalFile.path);
+      if (cropped != null) {
+        File? compressed = await compressImage(cropped);
+        if (compressed != null) {
+          print('Final Image: ${compressed.path}, Size: ${(await compressed.length()) / (1024 * 1024)} MB');
+
+          setState(() {
+            images[key] = compressed;
+          });
+        }
+      }
+    } else {
+      print('Image picking cancelled.');
+    }
+  }
+
+  Future<File?> cropImage(String imagePath) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      maxWidth: 1080,
+      maxHeight: 1080,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Colors.red,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9,
+          ],
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: false,
+        ),
+      ],
+    );
+
+    return croppedFile != null ? File(croppedFile.path) : null;
+  }
+
+  Future<File?> compressImage(File file) async {
+    final compressedImagePath = '${file.path}_compressed.jpg';
+    XFile? result = await FlutterImageCompress.compressAndGetFile(
+      file.path,
+      compressedImagePath,
+      quality: 50,
+    );
+    return result != null ? File(result.path) : null;
   }
 }
 

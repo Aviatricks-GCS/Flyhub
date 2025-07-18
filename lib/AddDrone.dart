@@ -128,12 +128,25 @@ class _AdddroneState extends State<Adddrone> {
               fileImages,
             );
             if (response["status"] == "success") {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => Dynamichome(selectedIndex: 3),
-                ),
-                (Route<dynamic> route) => false,
-              );
+
+              Utils.bottomtoast(context, "Added Successfully");
+
+              if (widget.type == "1"){
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => Dynamichome(selectedIndex: 1),
+                  ),
+                      (Route<dynamic> route) => false,
+                );
+              }else if(widget.type == "2") {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => Dynamichome(selectedIndex: 3),
+                  ),
+                      (Route<dynamic> route) => false,
+                );
+              }
+
             }
           },
           style: ElevatedButton.styleFrom(

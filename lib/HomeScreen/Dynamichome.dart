@@ -59,7 +59,10 @@ class _DynamichomeState extends State<Dynamichome> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: _screens[_selectedIndex],
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _screens,
+        ),
 
         bottomNavigationBar: BottomNavigationBar(
           elevation: 20,

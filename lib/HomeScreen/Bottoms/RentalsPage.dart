@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../CommonClass/ApiClass.dart';
 import '../../CommonClass/Utils.dart';
 
@@ -7,9 +9,15 @@ class RentalsPage extends StatefulWidget {
   State<RentalsPage> createState() => _RentalsPageState();
 }
 
-class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin {
+class _RentalsPageState extends State<RentalsPage>
+    with TickerProviderStateMixin {
   late TabController _mainTabController;
-  final List<String> subFilters = ['Today', 'Professional', 'With Pilot', 'Insured'];
+  final List<String> subFilters = [
+    'Today',
+    'Professional',
+    'With Pilot',
+    'Insured',
+  ];
   final ApiClass _apiClass = ApiClass();
   List<dynamic> droneList = [];
 
@@ -52,10 +60,13 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
         itemCount: subFilters.length,
         separatorBuilder: (_, __) => SizedBox(width: 10),
         itemBuilder: (context, index) {
-          return Chip(
-            label: Text(subFilters[index]),
-            backgroundColor: Colors.grey[200],
-            labelStyle: TextStyle(color: Colors.black),
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 14,vertical: 10),
+            decoration: BoxDecoration(
+                color: Color(0xffF7F7F8),
+              borderRadius: BorderRadius.circular(16)
+            ),
+            child: Center(child: Text(subFilters[index],style: GoogleFonts.lexend(fontSize: 12,fontWeight: FontWeight.w500),)),
           );
         },
       ),
@@ -64,61 +75,103 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
 
   Widget buildRentalCard(Map<String, dynamic> drone) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Stack(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12), bottom: Radius.circular(12)),
-                  child: Image.asset(
-                    'assets/images/MaskGroup34@2x.png',
-                    height: 100,
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: drone['image1'],
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    // or a custom widget
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/MaskGroup34@2x.png',
+                      height: 90,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    height: 90,
                     width: double.infinity,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
+
                 Positioned(
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.white, width: 0.5),
+                      borderRadius: BorderRadius.circular(3),
                     ),
-                    child: Text('9.2 km away', style: TextStyle(color: Colors.white, fontSize: 10)),
+                    child: Text(
+                      '9.2 km away',
+                      style: GoogleFonts.lexend(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(drone['name'] ?? 'Drone Name', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(drone['specs'] ?? 'Specifications', style: TextStyle(fontSize: 10, color: Colors.grey[700])),
+                SizedBox(height: 4),
+                Text(
+                  drone['model'] ?? 'Drone Name',
+                  style: GoogleFonts.lexend(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  drone['specs'] ?? 'Specifications',
+                  style: GoogleFonts.lexend(
+                    fontSize: 10,
+                    color: Colors.grey[700],
+                  ),
+                ),
                 SizedBox(height: 4),
                 Column(
                   children: [
                     Row(
                       children: [
-                        Text('₹${drone['price_per_hour'] ?? '0'}', style: TextStyle(color: Colors.grey[700])),
-                        Text('/hour', style: TextStyle(fontSize: 10, color: Colors.deepOrange)),
+                        Text(
+                          '₹${drone['price_per_hour'] ?? '0'}',
+                          style: GoogleFonts.lexend(color: Colors.grey[700]),
+                        ),
+                        Text(
+                          '/hour',
+                          style: GoogleFonts.lexend(
+                            fontSize: 10,
+                            color: Colors.deepOrange,
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(width: 10),
                     Row(
                       children: [
-                        Text('₹${drone['price_per_day'] ?? '0'}', style: TextStyle(color: Colors.grey[700])),
-                        Text('/day', style: TextStyle(fontSize: 10, color: Colors.deepOrange)),
+                        Text(
+                          '₹${drone['price_per_day'] ?? '0'}',
+                          style: GoogleFonts.lexend(color: Colors.grey[700]),
+                        ),
+                        Text(
+                          '/day',
+                          style: GoogleFonts.lexend(
+                            fontSize: 10,
+                            color: Colors.deepOrange,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -129,25 +182,36 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
                     children: [
                       Icon(Icons.check_circle, size: 14, color: Colors.green),
                       SizedBox(width: 4),
-                      Text('Insurance', style: TextStyle(fontSize: 10, color: Colors.black)),
+                      Text(
+                        'Insurance',
+                        style: GoogleFonts.lexend(
+                          fontSize: 10,
+                          color: Colors.black,
+                        ),
+                      ),
                     ],
                   ),
-                SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
+                  height: 30,
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      backgroundColor: Color(0xff7057FF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
-                    child: Text('Book Now', style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      'Book Now',
+                      style: GoogleFonts.lexend(color: Colors.white),
+                    ),
                   ),
                 ),
               ],
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -155,16 +219,17 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Drone Rentals'),
+        title: Text('Drone Rentals', style: GoogleFonts.lexend()),
         leading: Icon(Icons.arrow_back),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         bottom: TabBar(
           controller: _mainTabController,
-          labelColor: Colors.purple,
+          labelColor: Color(0xff7057FF),
           unselectedLabelColor: Colors.grey,
-          indicatorColor: Colors.purple,
+          indicatorColor: Color(0xff7057FF),
           tabs: [
             Tab(text: 'Available'),
             Tab(text: 'My Bookings'),
@@ -180,25 +245,26 @@ class _RentalsPageState extends State<RentalsPage> with TickerProviderStateMixin
             child: droneList.isEmpty
                 ? Center(child: Text("No drones available"))
                 : GridView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.61,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-              ),
-              itemCount: droneList.length,
-              itemBuilder: (context, index) {
-                return buildRentalCard(droneList[index]);
-              },
-            ),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.68,
+                      /*mainAxisSpacing: 1,
+                      crossAxisSpacing: 1,*/
+                    ),
+                    itemCount: droneList.length,
+                    itemBuilder: (context, index) {
+                      return buildRentalCard(droneList[index]);
+                    },
+                  ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.purple,
+        backgroundColor: Color(0xff7057FF),
+        shape: CircleBorder(),
         onPressed: () {},
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white, size: 35),
       ),
     );
   }

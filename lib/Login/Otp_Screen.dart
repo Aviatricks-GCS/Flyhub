@@ -154,7 +154,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               child: Text(
                                 '${widget.logindata['verify_page']['title1']}',
                                 style: GoogleFonts.lexend(
-                                  fontSize: w * 0.06,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -163,37 +163,38 @@ class _OtpScreenState extends State<OtpScreen> {
                             SizedBox(height: h * 0.005),
 
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text.rich(
-                                  TextSpan(
-                                    text:
-                                        '${widget.logindata['verify_page']['title2']} ',
-                                    style: GoogleFonts.lexend(
-                                      color: Colors.black87,
-                                      fontSize: w * 0.035,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text: '$mobile_number',
-                                        style: GoogleFonts.lexend(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: w * 0.035,
-                                        ),
+                                Flexible(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: '${widget.logindata['verify_page']['title2']} ',
+                                      style: GoogleFonts.lexend(
+                                        color: Colors.black87,
+                                        fontSize: w * 0.035,
                                       ),
-                                    ],
+                                      children: [
+                                        TextSpan(
+                                          text: mobile_number,
+                                          style: GoogleFonts.lexend(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: w * 0.038,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    overflow: TextOverflow.visible,
                                   ),
                                 ),
-
-                                SizedBox(width: 2),
-
+                                const SizedBox(width: 6),
                                 InkWell(
                                   onTap: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 3.0),
-                                    child: const Icon(Icons.edit, size: 18),
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(top: 2.0),
+                                    child: Icon(Icons.edit, size: 18),
                                   ),
                                 ),
                               ],

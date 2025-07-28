@@ -3,13 +3,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flyhub/FindJobs.dart';
 import 'package:flyhub/RegistrationDetails.dart';
 import 'package:flyhub/Template/Template1.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../CommonClass/ApiClass.dart';
 import '../../CommonClass/Utils.dart';
 import '../../Template/Template2.dart';
 import '../../Template/Template3.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -45,12 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : ListView(
+        child: ListView(
           children: [
             Container(
               color: Color(0xFF1A0A5B), // dark purple background
@@ -86,15 +90,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: Icon(Icons.search),
-                      hintText: "Search drones, pilots, services...",
-                      suffixIcon: Icon(Icons.mic),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      style: GoogleFonts.lexend(fontSize: 14),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.search, size: 20),
+                        hintText: "Search drones,pilots,services...",
+                        hintStyle: GoogleFonts.lexend(fontSize: 14),
+                        suffixIcon: Icon(Icons.mic, size: 20),
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 5,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
@@ -102,7 +116,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            ...preloadedWidgets,
+            if (isLoading)
+              shimmerContent()
+            else
+              ...preloadedWidgets,
           ],
         ),
       ),
@@ -121,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
         case 'template_2':
           widgets.add(
             Template2(
-              title : currentItem['title'],
+              title: currentItem['title'],
               appBar_title: currentItem['form_top'],
               form_title: currentItem['form_title'],
               rightImg: currentItem['right_img'],
@@ -170,6 +187,97 @@ class _HomeScreenState extends State<HomeScreen> {
       Utils.bottomtoast(context, "Check your Internet Connection");
     }
   }
+
+
+  Widget shimmerContent() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Column(
+        children: [
+          // Grid Items
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: GridView.builder(
+              itemCount: 8,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 1,
+              ),
+              itemBuilder: (_, __) => Column(
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    height: 10,
+                    width: 40,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: 20),
+
+          // Register button shimmer
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              height: 45,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 20),
+
+          // Featured Drones section shimmer
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Container(
+                  height: 180,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Container(
+                  height: 180,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 30),
+        ],
+      ),
+    );
+  }
+
 
 }
 

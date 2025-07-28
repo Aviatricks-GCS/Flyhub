@@ -45,7 +45,7 @@ class _SplashscreenState extends State<Splashscreen> {
     }else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => dynamichome()),
+        MaterialPageRoute(builder: (context) => Dynamichome(selectedIndex: 0,)),
       );
     }
 

@@ -44,7 +44,7 @@ class DroneCard extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle( fontSize: 12,fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 3),
             // Price

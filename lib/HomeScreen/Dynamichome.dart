@@ -6,10 +6,6 @@ import 'Bottoms/ProfilePage.dart';
 import 'Bottoms/RentalsPage.dart';
 import 'Bottoms/homescreen.dart';
 
-
-
-
-
 class dynamichome extends StatefulWidget {
   @override
   _dynamichomeState createState() => _dynamichomeState();

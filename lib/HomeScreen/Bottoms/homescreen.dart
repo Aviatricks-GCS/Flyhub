@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flyhub/FindJobs.dart';
+import 'package:flyhub/RegistrationDetails.dart';
 import 'package:flyhub/Template/Template1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,7 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.menu, color: Colors.white),
+                      GestureDetector(
+                        onTap : (){
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> Findjobs()));
+      },
+                          child: Icon(Icons.menu, color: Colors.white)),
                       Row(
                         children: [
                           Icon(Icons.shopping_cart, color: Colors.white),
@@ -158,7 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         print("Unexpected data format: ${response['items']}");
       }
-
       preloadWidgets();
     } else {
       isInternet = false;

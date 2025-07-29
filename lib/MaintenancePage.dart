@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyhub/ServiceCenter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Maintenancepage extends StatefulWidget {
@@ -55,9 +56,9 @@ class _MaintenancepageState extends State<Maintenancepage> {
                     onPressed: () => Navigator.pop(context),
                   ),
                   Text(
-                    'Add My Drone',
+                    'Service Centers Near You',
                     style: GoogleFonts.lexend(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -69,7 +70,7 @@ class _MaintenancepageState extends State<Maintenancepage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
         child: Column(
           children: [
             // Search box
@@ -88,6 +89,7 @@ class _MaintenancepageState extends State<Maintenancepage> {
                       decoration: InputDecoration(
                         hintText: "Search by shop name, city, or service..",
                         border: InputBorder.none,
+                        hintStyle: TextStyle(fontSize: 13),
                       ),
                     ),
                   ),
@@ -119,10 +121,13 @@ class _MaintenancepageState extends State<Maintenancepage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(center['name']!,
-                                  style: GoogleFonts.lexend(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600)),
+                              Text(
+                                center['name']!,
+                                style: GoogleFonts.lexend(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               Text(
                                 '${center['location']}  |  ${center['distance']}',
                                 style: GoogleFonts.lexend(fontSize: 12),
@@ -131,17 +136,30 @@ class _MaintenancepageState extends State<Maintenancepage> {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Servicecenter(),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDFE0F4),
+                            backgroundColor: Color(0xFF8B98B4),
                             foregroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            textStyle: GoogleFonts.lexend(fontSize: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            minimumSize: Size(0, 30),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
-                          child: Text("More Details"),
+                          child: Text(
+                            "More Details",
+                            style: GoogleFonts.lexend(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ],
                     ),

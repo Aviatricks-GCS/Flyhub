@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Findjobs extends StatefulWidget {
   const Findjobs({super.key});
@@ -8,203 +9,278 @@ class Findjobs extends StatefulWidget {
 }
 
 class _FindjobsState extends State<Findjobs> {
-  final List<Job> jobs = [
-    Job(
-      title: 'Aerial Photography Drone Pilot',
-      pay: '₹1500/hour',
-      location: 'Mumbai',
-      type: 'Full-time',
-      imageUrl: 'https://images.unsplash.com/photo-1464983953574-0892a716854b', // Placeholder
-      applied: true,
-    ),
-    Job(
-      title: 'Drone Pilot for Surveying',
-      pay: '₹1200/hour',
-      location: 'Bangalore',
-      type: 'Part-time',
-      imageUrl: 'https://images.unsplash.com/photo-1465101178521-c1a152f8a61d', // Placeholder
-      applied: false,
-    ),
-    Job(
-      title: 'Delivery Drone Operator',
-      pay: '₹1000/hour',
-      location: 'Delhi',
-      type: 'Full-time',
-      imageUrl: 'https://images.unsplash.com/photo-1519681393794-d120267933ba', // Placeholder
-      applied: false,
-    ),
-    Job(
-      title: 'Drone Inspection Specialist',
-      pay: '₹3000/hour',
-      location: 'Chennai',
-      type: 'Contract',
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb', // Placeholder
-      applied: false,
-    ),
+  final List<String> filters = [
+    'Photography',
+    'Survey',
+    'Delivery',
+    'Inspection',
   ];
 
-  final categories = ['Photography', 'Survey', 'Delivery', 'Inspection'];
+  final List<Map<String, String>> jobList = [
+    {
+      "title": "Drone Pilot for Surveying",
+      "price": "₹1200/hour",
+      "city": "Bangalore",
+      "imagePath": "assets/images/MaskGroup34.png",
+    },
+    {
+      "title": "Delivery Drone Operator",
+      "price": "₹1000/hour",
+      "city": "Delhi",
+      "imagePath": "assets/images/MaskGroup34.png",
+    },
+    {
+      "title": "Drone Inspection Specialist",
+      "price": "₹3000/hour",
+      "city": "Chennai",
+      "imagePath": "assets/images/MaskGroup34.png",
+    },
+    {
+      "title": "Delivery Drone Operator",
+      "price": "₹1000/hour",
+      "city": "Delhi",
+      "imagePath": "assets/images/MaskGroup34.png",
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          width: 375,
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              // App Bar Row
-              Row(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56),
+        child: SafeArea(
+          child: Material(
+            elevation: 3,
+            shadowColor: Colors.black.withOpacity(0.4),
+            child: Container(
+              color: Colors.white,
+              child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {},
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                  SizedBox(width: 10),
                   Text(
                     'Find Jobs',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: GoogleFonts.lexend(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                  Spacer(),
-                  Icon(Icons.grid_view),
-                  SizedBox(width: 12),
                 ],
               ),
-              // Search Bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Search for jobs',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                  ),
+            ),
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Search for jobs",
+                hintStyle: GoogleFonts.lexend(fontSize: 14),
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Color(0xffD2D2D2)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Color(0xffD2D2D2)),
                 ),
               ),
-              // Category Filters
-              Container(
+            ),
+
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18.0,horizontal: 0),
+              child: SizedBox(
                 height: 36,
-                child: ListView.separated(
+                child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  separatorBuilder: (_, __) => SizedBox(width: 8),
-                  itemCount: categories.length,
-                  itemBuilder: (context, i) {
-                    return Chip(
-                      label: Text(categories[i]),
-                      backgroundColor: i == 0 ? Color(0xFF8763FF) : Colors.grey[200],
-                      labelStyle: TextStyle(
-                          color: i == 0 ? Colors.white : Colors.black87,
-                          fontWeight: FontWeight.w600),
+                  //padding: EdgeInsets.symmetric(horizontal: 16),
+                  children: filters.map((f) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Chip(
+                        label: Text(f),
+                        backgroundColor: Color(0xffF7F7F8),
+                        labelStyle: GoogleFonts.lexend(fontSize: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          side: BorderSide(color: Color(0xffF7F7F8)),
+                        ),
+                      ),
                     );
-                  },
+                  }).toList(),
                 ),
               ),
-              // Jobs List
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: jobs.length,
-                  itemBuilder: (context, i) {
-                    final job = jobs[i];
-                    return Card(
-                      elevation: 2,
-                      margin: EdgeInsets.only(bottom: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: Row(
+            ),
+
+            // SCROLLABLE: From here
+            Expanded(
+              child: ListView(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      "assets/images/MaskGroup34.png",
+                      width: double.infinity,
+                      fit: BoxFit.fitWidth,
+                      height: MediaQuery.of(context).size.height * 0.2,
+                    ),
+                  ),
+
+                  SizedBox(height: 16),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 85,
-                            height: 85,
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12),
-                                bottomLeft: Radius.circular(12),
-                              ),
-                            ),
-                            child: Image.network(job.imageUrl, fit: BoxFit.cover),
+                          Text(
+                            "Aerial Photography Drone Pilot",
+                            style: GoogleFonts.lexend(fontWeight: FontWeight.w600),
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(job.title,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600)),
-                                  SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      Text(job.pay, style: TextStyle(color: Colors.grey[700])),
-                                      SizedBox(width: 10),
-                                      Icon(Icons.location_on, size: 14, color: Colors.grey[600]),
-                                      SizedBox(width: 2),
-                                      Text(job.location, style: TextStyle(fontSize: 13)),
-                                    ],
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(job.type, style: TextStyle(fontSize: 13, color: Colors.grey[600])),
-                                ],
+                          SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Text(
+                                "₹1500/hour",
+                                style: GoogleFonts.lexend(fontSize: 12),
                               ),
-                            ),
+                              SizedBox(width: 10),
+                              Icon(Icons.location_on, size: 14, color: Colors.grey),
+                              Text("Mumbai", style: GoogleFonts.lexend(fontSize: 12)),
+                            ],
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 12),
-                            child: job.applied
-                                ? Container(
-                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 14),
-                              decoration: BoxDecoration(
-                                color: Color(0xFF8763FF),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text('Applied',
-                                  style: TextStyle(color: Colors.white)),
-                            )
-                                : OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Color(0xFF8763FF)),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-                              ),
-                              onPressed: () {},
-                              child: Text(
-                                'Apply',
-                                style: TextStyle(color: Color(0xFF8763FF)),
-                              ),
+                          SizedBox(height: 6),
+                          Text(
+                            "Full-time",
+                            style: GoogleFonts.lexend(
+                              fontSize: 12,
+                              color: Colors.grey,
                             ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF7057FF),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          "Applied",
+                          style: GoogleFonts.lexend(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+
+                  // Job List Items
+                  ...jobList.map((job) => jobListItem(
+                    title: job['title']!,
+                    price: job['price']!,
+                    city: job['city']!,
+                    imagePath: job['imagePath']!,
+                  )),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class Job {
-  final String title, pay, location, type, imageUrl;
-  final bool applied;
-  Job({
-    required this.title,
-    required this.pay,
-    required this.location,
-    required this.type,
-    required this.imageUrl,
-    this.applied = false,
-  });
+  Widget jobListItem({
+    required String title,
+    required String price,
+    required String city,
+    required String imagePath,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Text Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.lexend(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(price, style: GoogleFonts.lexend(fontSize: 12)),
+                    SizedBox(width: 8),
+                    Icon(Icons.location_on, size: 14, color: Colors.grey),
+                    Text(city, style: GoogleFonts.lexend(fontSize: 12)),
+                  ],
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                    minimumSize: Size(0, 25),
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: Color(0xFF7057FF)),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: Text(
+                    "Apply",
+                    style: GoogleFonts.lexend(
+                      fontSize: 12,
+                      color: Color(0xFF7057FF),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // SizedBox(width: 12),
+
+          // Job Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              imagePath,
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

@@ -16,8 +16,14 @@ class DroneCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double cardWidth = screenWidth * 0.42;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Dynamically scale sizes
+    final double cardWidth = screenWidth * 0.42;
+    final double imageHeight = screenWidth * 0.2;
+    final double fontSizeTitle = screenWidth * 0.025;
+    final double fontSizePrice = screenWidth * 0.02;
+    final double iconSize = screenWidth * 0.04;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -25,17 +31,18 @@ class DroneCard extends StatelessWidget {
       elevation: 3,
       child: Container(
         width: cardWidth,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min, //
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Image
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
                 image,
-                height: 80,
+                height: imageHeight,
+                width: double.infinity,
                 fit: BoxFit.contain,
               ),
             ),
@@ -44,14 +51,21 @@ class DroneCard extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12,fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: fontSizeTitle,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             SizedBox(height: 3),
             // Price
             Text(
-              "$price",
+              price,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: fontSizePrice,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
+              ),
             ),
             SizedBox(height: 3),
             // Rating
@@ -61,7 +75,7 @@ class DroneCard extends StatelessWidget {
                 int ratingValue = int.tryParse(rating) ?? 0;
                 return Icon(
                   Icons.star,
-                  size: 16,
+                  size: iconSize,
                   color: index < ratingValue ? Colors.orange : Colors.grey[300],
                 );
               }),
@@ -70,6 +84,5 @@ class DroneCard extends StatelessWidget {
         ),
       ),
     );
-
   }
 }

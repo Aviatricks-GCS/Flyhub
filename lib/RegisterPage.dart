@@ -13,6 +13,7 @@ class RegisterPage extends StatelessWidget {
     required this.form_title,
   });
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../MyOrderPage.dart';
+import '../Dynamichome.dart';
+
 class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -11,7 +14,16 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
-        leading: Icon(Icons.arrow_back),
+        leading: GestureDetector(
+            onTap: (){
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => Dynamichome(selectedIndex: 0),
+                ),
+                    (Route<dynamic> route) => false,
+              );
+            },
+            child: Icon(Icons.arrow_back)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
@@ -58,7 +70,10 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 20),
 
             // Menu Options
-            buildMenuItem(Icons.shopping_bag, "My Order"),
+            GestureDetector(onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MyOrderPage()));
+            },
+                child: buildMenuItem(Icons.shopping_bag, "My Order")),
             buildMenuItem(Icons.shopping_cart, "My Cart"),
             buildMenuItem(Icons.favorite, "Your Favorite"),
             buildMenuItem(Icons.star, "Reviews"),

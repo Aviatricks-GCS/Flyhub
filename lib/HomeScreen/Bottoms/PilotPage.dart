@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Dynamichome.dart';
+
 class PilotPage extends StatefulWidget {
   @override
   State<PilotPage> createState() => _PilotPageState();
@@ -30,10 +32,16 @@ class _PilotPageState extends State<PilotPage> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context), // Or callback to change bottom tab
-        ),
+        leading: GestureDetector(
+            onTap: (){
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => Dynamichome(selectedIndex: 0),
+                ),
+                    (Route<dynamic> route) => false,
+              );
+            },
+            child: Icon(Icons.arrow_back)),
         bottom: TabBar(
           controller: _mainTabController,
           labelColor: Colors.deepPurple,

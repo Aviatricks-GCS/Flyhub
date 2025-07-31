@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../CommonClass/ApiClass.dart';
 import '../../CommonClass/Utils.dart';
+import '../../MyDroneListScreen.dart';
+import '../Dynamichome.dart';
 
 class RentalsPage extends StatefulWidget {
   @override
@@ -74,33 +76,40 @@ class _RentalsPageState extends State<RentalsPage>
   }
 
   Widget buildRentalCard(Map<String, dynamic> drone) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    // Dynamic scaling factors
+    double imageHeight = screenWidth * 0.25;
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
               children: [
+                // Image
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
                     imageUrl: drone['image1'],
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    // or a custom widget
+                    placeholder: (context, url) => SizedBox(
+                      height: imageHeight,
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
                     errorWidget: (context, url, error) => Image.asset(
                       'assets/images/MaskGroup34@2x.png',
-                      height: 90,
+                      height: imageHeight,
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),
-                    height: 90,
+                    height: imageHeight,
                     width: double.infinity,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                 ),
 
@@ -191,24 +200,28 @@ class _RentalsPageState extends State<RentalsPage>
                       ),
                     ],
                   ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff7057FF),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    child: Text(
-                      'Book Now',
-                      style: GoogleFonts.lexend(color: Colors.white),
-                    ),
+
+
+              ],
+            ),
+            Spacer(),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+              child: ElevatedButton(
+                onPressed: () {
+
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-              ],
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text("Book Now", style: TextStyle(fontSize: 12,color: Colors.white))]),
+              ),
             ),
           ],
         ),
@@ -222,7 +235,16 @@ class _RentalsPageState extends State<RentalsPage>
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Drone Rentals', style: GoogleFonts.lexend()),
-        leading: Icon(Icons.arrow_back),
+        leading: GestureDetector(
+            onTap: (){
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => Dynamichome(selectedIndex: 0),
+                ),
+                    (Route<dynamic> route) => false,
+              );
+            },
+            child: Icon(Icons.arrow_back)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         bottom: TabBar(
@@ -263,7 +285,9 @@ class _RentalsPageState extends State<RentalsPage>
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff7057FF),
         shape: CircleBorder(),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MyDroneListPage()));
+        },
         child: Icon(Icons.add, color: Colors.white, size: 35),
       ),
     );

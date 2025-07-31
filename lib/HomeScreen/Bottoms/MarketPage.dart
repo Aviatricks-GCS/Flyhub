@@ -211,21 +211,41 @@ class _MarketPageState extends State<MarketPage>
       ),
       body: Column(
         children: [
-          SizedBox(height: 10),
-          buildSubFilterTabs(),
+          const SizedBox(height: 10),
+
           Expanded(
             child: droneList.isEmpty
-                ? Center(child: Text("No drones available"))
-                :TabBarView(
+                ? const Center(child: Text("No drones available"))
+                : TabBarView(
               controller: _mainTabController,
               children: [
+                // Tab 1: With sub filters
+                Column(
+                  children: [
+                    buildSubFilterTabs(),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.78,
+                        ),
+                        itemCount: droneList.length,
+                        itemBuilder: (context, index) {
+                          return buildMarketCard(droneList[index]);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Tab 2
                 GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.78,
-                    /*mainAxisSpacing: 1,
-                      crossAxisSpacing: 1,*/
                   ),
                   itemCount: droneList.length,
                   itemBuilder: (context, index) {
@@ -233,38 +253,24 @@ class _MarketPageState extends State<MarketPage>
                   },
                 ),
 
+                // Tab 3
                 GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.78,
-                    /*mainAxisSpacing: 1,
-                      crossAxisSpacing: 1,*/
                   ),
                   itemCount: droneList.length,
                   itemBuilder: (context, index) {
                     return buildMarketCard(droneList[index]);
                   },
                 ),
-
-                GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.78,
-                    /*mainAxisSpacing: 1,
-                      crossAxisSpacing: 1,*/
-                  ),
-                  itemCount: droneList.length,
-                  itemBuilder: (context, index) {
-                    return buildMarketCard(droneList[index]);
-                  },
-                ),// Specialists
               ],
             ),
           ),
         ],
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff7057FF),
         shape: CircleBorder(),

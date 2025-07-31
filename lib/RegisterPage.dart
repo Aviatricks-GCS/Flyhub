@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flyhub/AddDrone.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'NewJobPostPage.dart';
+
 class RegisterPage extends StatelessWidget {
   final List registerList;
   final String appBar_title;
@@ -12,6 +14,7 @@ class RegisterPage extends StatelessWidget {
     required this.appBar_title,
     required this.form_title,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +91,14 @@ class RegisterPage extends StatelessWidget {
                               clickUrl: item["click_url"],
                               type: "2",
                             ),
+                          ),
+                        );
+                      }
+                      else if (item["click_url"] == "add_jobs") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewJobPostPage()
                           ),
                         );
                       }

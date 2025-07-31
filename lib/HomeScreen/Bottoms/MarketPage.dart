@@ -4,7 +4,9 @@ import 'package:flyhub/CommonClass/ApiClass.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../CommonClass/Utils.dart';
+import '../../DroneDetailPage.dart';
 import '../../MarketItemCard.dart';
+import '../Dynamichome.dart';
 
 class MarketPage extends StatefulWidget {
   @override
@@ -79,67 +81,99 @@ class _MarketPageState extends State<MarketPage>
   }
 
   Widget buildMarketCard(Map<String, dynamic> drone) {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    double screenWidth = MediaQuery.of(context).size.width;
 
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                imageUrl: drone['image1'],
-                placeholder: (context, url) => CircularProgressIndicator(),
-                // or a custom widget
-                errorWidget: (context, url, error) => Image.asset(
-                  'assets/images/MaskGroup34@2x.png',
-                  height: 90,
+    // Dynamic scaling factors
+    double imageHeight = screenWidth * 0.25; // roughly 90 on ~360dp screens
+    double titleFontSize = screenWidth * 0.02; // ~14-15sp
+    double subtitleFontSize = screenWidth * 0.02; // ~10-11sp
+    double ratingIconSize = screenWidth * 0.035; // ~12-14
+    double padding = screenWidth * 0.025; // ~8-10
+
+    return GestureDetector(
+      onTap: () {
+        Utils.bottomtoast(context, "${drone['image1']}");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DroneDetailPage(Drone: drone),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        margin: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
+        elevation: 4,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: drone['image1'],
+                  placeholder: (context, url) => SizedBox(
+                    height: imageHeight,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/images/MaskGroup34@2x.png',
+                    height: imageHeight,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  height: imageHeight,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
-                height: 90,
-                width: double.infinity,
-                fit: BoxFit.fill,
               ),
-            ),
 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 8),
-                Text(
-                  drone['model'] ?? 'Drone Name',
-                  style: GoogleFonts.lexend(fontWeight: FontWeight.bold),
+              // Details
+              SizedBox(height: padding),
+              Text(
+                drone['model'] ?? 'Drone Name',
+                style: GoogleFonts.lexend(
+                  fontWeight: FontWeight.bold,
+                  fontSize: titleFontSize,
                 ),
-                SizedBox(height: 1),
-                Text(
-                  drone['specs'] ?? 'Specifications',
-                  style: GoogleFonts.lexend(
-                    fontSize: 10,
-                    color: Colors.grey[700],
+              ),
+              SizedBox(height: 2),
+              Text(
+                drone['specs'] ?? 'Specifications',
+                style: GoogleFonts.lexend(
+                  fontSize: subtitleFontSize,
+                  color: Colors.grey[700],
+                ),
+              ),
+              SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(Icons.star, size: ratingIconSize, color: Colors.orange),
+                  SizedBox(width: 2),
+                  Text(
+                    "4.5",
+                    style: TextStyle(fontSize: subtitleFontSize),
                   ),
+                  SizedBox(width: 4),
+                  Text(
+                    "(686)",
+                    style: TextStyle(fontSize: subtitleFontSize, color: Colors.grey),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
+              Text(
+                drone['price'] != "" ? "₹${drone['price']}" : "",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: titleFontSize,
                 ),
-                SizedBox(height: 2),
-                Row(
-                  children: [
-                    Icon(Icons.star, size: 14, color: Colors.orange),
-                    Text("4.5", style: TextStyle(fontSize: 12)),
-                    SizedBox(width: 4),
-                    Text("(686)",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4),
-                Text(drone['price'] != "" ? "₹${drone['price']}" : "", style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -151,7 +185,16 @@ class _MarketPageState extends State<MarketPage>
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Drone Rentals', style: GoogleFonts.lexend()),
-        leading: Icon(Icons.arrow_back),
+        leading: GestureDetector(
+          onTap: (){
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => Dynamichome(selectedIndex: 0),
+              ),
+                  (Route<dynamic> route) => false,
+            );
+          },
+            child: Icon(Icons.arrow_back)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         bottom: TabBar(
@@ -168,27 +211,66 @@ class _MarketPageState extends State<MarketPage>
       ),
       body: Column(
         children: [
-          SizedBox(height: 10),
-          buildSubFilterTabs(),
+          const SizedBox(height: 10),
+
           Expanded(
             child: droneList.isEmpty
-                ? Center(child: Text("No drones available"))
-                : GridView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.78,
-                      /*mainAxisSpacing: 1,
-                      crossAxisSpacing: 1,*/
+                ? const Center(child: Text("No drones available"))
+                : TabBarView(
+              controller: _mainTabController,
+              children: [
+                // Tab 1: With sub filters
+                Column(
+                  children: [
+                    buildSubFilterTabs(),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.78,
+                        ),
+                        itemCount: droneList.length,
+                        itemBuilder: (context, index) {
+                          return buildMarketCard(droneList[index]);
+                        },
+                      ),
                     ),
-                    itemCount: droneList.length,
-                    itemBuilder: (context, index) {
-                      return buildMarketCard(droneList[index]);
-                    },
+                  ],
+                ),
+
+                // Tab 2
+                GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.78,
                   ),
+                  itemCount: droneList.length,
+                  itemBuilder: (context, index) {
+                    return buildMarketCard(droneList[index]);
+                  },
+                ),
+
+                // Tab 3
+                GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.78,
+                  ),
+                  itemCount: droneList.length,
+                  itemBuilder: (context, index) {
+                    return buildMarketCard(droneList[index]);
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff7057FF),
         shape: CircleBorder(),

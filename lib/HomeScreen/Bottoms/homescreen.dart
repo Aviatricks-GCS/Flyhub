@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../CommonClass/ApiClass.dart';
 import '../../CommonClass/Utils.dart';
+import '../../MyCartPage.dart';
 import '../../Template/Template2.dart';
 import '../../Template/Template3.dart';
 
@@ -72,7 +73,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Icon(Icons.menu, color: Colors.white)),
                       Row(
                         children: [
-                          Icon(Icons.shopping_cart, color: Colors.white),
+                          GestureDetector(
+                            onTap:(){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => MyCartPage()),
+                              );
+
+      },
+                              child: Icon(Icons.shopping_cart, color: Colors.white)),
                           SizedBox(width: 20),
                           Icon(Icons.notifications, color: Colors.white),
                         ],
@@ -195,85 +204,80 @@ class _HomeScreenState extends State<HomeScreen> {
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Grid Items
+          // Grid Items (Icons with labels)
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             child: GridView.builder(
               itemCount: 8,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1,
+                childAspectRatio: 0.85,
               ),
               itemBuilder: (_, __) => Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    height: 40,
-                    width: 40,
+                    height: 48,
+                    width: 48,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Container(
                     height: 10,
                     width: 40,
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
 
-          SizedBox(height: 20),
-
-          // Register button shimmer
+          // Register Card Button (Full-width shimmer)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Container(
-              height: 45,
+              height: 120,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),
 
-          SizedBox(height: 20),
-
-          // Featured Drones section shimmer
+          // Featured Drones shimmer cards
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Container(
-                  height: 180,
-                  width: 150,
+            child: SizedBox(
+              height: 200,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: 3,
+                separatorBuilder: (_, __) => const SizedBox(width: 16),
+                itemBuilder: (_, __) => Container(
+                  width: 160,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                SizedBox(width: 16),
-                Container(
-                  height: 180,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
 
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
         ],
       ),
     );

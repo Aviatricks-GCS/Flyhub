@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flyhub/Login/SelectLanguage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../HomeScreen/Dynamichome.dart';
@@ -24,7 +25,7 @@ class _SplashscreenState extends State<Splashscreen> {
   void initState() {
     super.initState();
 
-    _timer = Timer(Duration(milliseconds: 3000), () async {
+    _timer = Timer(Duration(milliseconds: 5000), () async {
       if (!mounted) return;
       //bool isFirstLaunch = pref.getBool('isFirstLaunch') ?? true;
       navigateToNextPage();
@@ -64,16 +65,16 @@ class _SplashscreenState extends State<Splashscreen> {
           height: double.infinity,
           child: Stack(
             children: [
-
               // Centered FlyHub logo and tagline
               Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgPicture.asset(
+                    Lottie.asset("assets/jsonFiles/spalshScreenJson.json"),
+                    /*SvgPicture.asset(
                       'assets/images/flyHub_logo.svg',
                       width: screenWidth * 0.55, // 50% of screen width
-                    ),
+                    ),*/
                     SizedBox(height: screenHeight * 0.015),
                     Text(
                       'your complete drone ecosystem',

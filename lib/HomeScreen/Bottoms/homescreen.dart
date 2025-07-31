@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flyhub/FindJobs.dart';
+import 'package:flyhub/OrderDetails.dart';
 import 'package:flyhub/RegistrationDetails.dart';
 import 'package:flyhub/Template/Template1.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       GestureDetector(
                         onTap : (){
-                 Navigator.push(context, MaterialPageRoute(builder: (context)=> Findjobs()));
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> OrderDetails()));
       },
                           child: Icon(Icons.menu, color: Colors.white)),
                       Row(

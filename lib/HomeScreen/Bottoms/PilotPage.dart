@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyhub/PilotRegistration.dart';
 
 class PilotPage extends StatefulWidget {
   @override
@@ -32,7 +33,7 @@ class _PilotPageState extends State<PilotPage> with TickerProviderStateMixin {
         elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context), // Or callback to change bottom tab
+          onPressed: (){}, // Or callback to change bottom tab
         ),
         bottom: TabBar(
           controller: _mainTabController,
@@ -64,9 +65,12 @@ class _PilotPageState extends State<PilotPage> with TickerProviderStateMixin {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurple,
-        onPressed: () {},
-        child: Icon(Icons.add),
+        backgroundColor: Color(0xff7057FF),
+        shape: CircleBorder(),
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Pilotregistration()));
+        },
+        child: Icon(Icons.add, color: Colors.white, size: 35),
       ),
     );
   }

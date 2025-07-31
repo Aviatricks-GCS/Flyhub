@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyhub/BookService.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Servicecenter extends StatefulWidget {
@@ -9,6 +10,28 @@ class Servicecenter extends StatefulWidget {
 }
 
 class _ServicecenterState extends State<Servicecenter> {
+
+  final List<Map<String, dynamic>> reviews = [
+    {
+      'name': 'Sanjay',
+      'time': '2 weeks ago',
+      'review':
+      'Excellent service! My drone\'s battery was replaced quickly and efficiently. Highly recommend!',
+      'likes': 15,
+      'dislikes': 5,
+      'image': 'https://i.pravatar.cc/100?img=1',
+    },
+    {
+      'name': 'Muthukumar',
+      'time': '2 weeks ago',
+      'review':
+      'Excellent service! My drone\'s battery was replaced quickly and efficiently. Highly recommend!',
+      'likes': 15,
+      'dislikes': 5,
+      'image': 'https://i.pravatar.cc/100?img=2',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +54,7 @@ class _ServicecenterState extends State<Servicecenter> {
                     'Service Centers',
                     style: GoogleFonts.lexend(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
@@ -49,7 +72,9 @@ class _ServicecenterState extends State<Servicecenter> {
             width: MediaQuery.of(context).size.width * 0.45,
             height: MediaQuery.of(context).size.height * 0.1,
             child: ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Bookservice()));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xff7057FF),
                 //padding: EdgeInsets.symmetric(vertical: 10),
@@ -86,7 +111,7 @@ class _ServicecenterState extends State<Servicecenter> {
       ),
 
       body: SingleChildScrollView(
-        padding:  EdgeInsets.all(18),
+        padding: EdgeInsets.all(18),
         child: Column(
           children: [
             // Top Card with image
@@ -102,7 +127,7 @@ class _ServicecenterState extends State<Servicecenter> {
 
             SizedBox(height: 16),
             // Owner and Location
-             Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Mr. Aravind Kumar",
@@ -110,36 +135,55 @@ class _ServicecenterState extends State<Servicecenter> {
               ),
             ),
 
-             Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text("Owner", style: TextStyle(color: Colors.grey)),
+              child: Text(
+                "Owner",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
 
-             SizedBox(height: 8),
+            SizedBox(height: 8),
 
             Row(
               children: [
-                Text("Ratings  "),
-                 Icon(Icons.star, color: Colors.orange, size: 18),
-                 SizedBox(width: 4),
-                 Text("4.8 (120 reviews)"),
-
+                Text(
+                  "Ratings  ",
+                  style: TextStyle(
+                    color: Color(0xff8B98B4),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(Icons.star, color: Colors.orange, size: 18),
+                SizedBox(width: 4),
+                Text(
+                  "4.8 (120 reviews)",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             ),
-             SizedBox(height: 8),
+            SizedBox(height: 8),
 
             Row(
               children: [
-                Text("Distance  "),
-                Icon(Icons.location_on, size: 18),
-                Text("3.2 km", style: TextStyle(color: Colors.blue)),
+                Text(
+                  "Distance  ",
+                  style: TextStyle(
+                    color: Color(0xff8B98B4),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text("3.2 km", style: TextStyle(color: Color(0xffEB7118))),
               ],
             ),
 
             SizedBox(height: 16),
 
             Column(
-              children:  [
+              children: [
                 InfoItem(icon: Icons.map, text: "View on Map"),
                 InfoItem(
                   icon: Icons.access_time,
@@ -149,69 +193,97 @@ class _ServicecenterState extends State<Servicecenter> {
                 InfoItem(icon: Icons.verified_user, text: "Warranty Support"),
               ],
             ),
-             SizedBox(height: 16),
 
+            SizedBox(height: 16),
 
-             Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Service Type",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-             SizedBox(height: 8),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children:  [
+            SizedBox(height: 8),
+
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.5,
+              children: [
                 ServiceTypeChip(
                   label: "Battery Replacement",
                   icon: Icons.battery_charging_full,
                 ),
+
                 ServiceTypeChip(label: "Propeller Repair", icon: Icons.build),
+
                 ServiceTypeChip(
                   label: "Camera Calibration",
                   icon: Icons.camera,
                 ),
+
                 ServiceTypeChip(
                   label: "Software Update",
                   icon: Icons.system_update,
                 ),
+
                 ServiceTypeChip(label: "Full Diagnostic", icon: Icons.search),
+
                 ServiceTypeChip(
                   label: "Custom Issue",
                   icon: Icons.miscellaneous_services,
                 ),
               ],
             ),
-             SizedBox(height: 24),
+
+            SizedBox(height: 24),
+
             // Rating stars
-             Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Rate this Shop",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-             SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: List.generate(
-                5,
-                (index) =>
-                     Icon(Icons.star_border, size: 32, color: Colors.grey),
+
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Tell Others What You Think",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10,color: Colors.grey),
               ),
             ),
-             SizedBox(height: 16),
+
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center
+                ,
+                children: List.generate(
+                  5,
+                  (index) =>
+                      Icon(Icons.star_border, size: 32, color: Colors.grey),
+                ),
+              ),
+            ),
+
+
             // Review box
-             Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Write a review",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-             SizedBox(height: 8),
+
+            SizedBox(height: 8),
+
             TextField(
               maxLines: 4,
               decoration: InputDecoration(
@@ -221,7 +293,9 @@ class _ServicecenterState extends State<Servicecenter> {
                 ),
               ),
             ),
-             SizedBox(height: 12),
+
+            SizedBox(height: 12),
+
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
@@ -229,19 +303,122 @@ class _ServicecenterState extends State<Servicecenter> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                 ),
-                child:  Text(
-                  "Post",
-                  style: TextStyle(color: Colors.black),
-                ),
+                child: Text("Post", style: TextStyle(color: Colors.black)),
               ),
             ),
-             SizedBox(height: 16),
-            // Buttons
+
+            SizedBox(height: 16),
+
+            Row(
+              children: [
+                Text("4.8",
+                    style: TextStyle(
+                        fontSize: 36, fontWeight: FontWeight.bold)),
+                SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      Icon(Icons.star, color: Colors.orange, size: 20),
+                      Icon(Icons.star, color: Colors.orange, size: 20),
+                      Icon(Icons.star, color: Colors.orange, size: 20),
+                      Icon(Icons.star, color: Colors.orange, size: 20),
+                      Icon(Icons.star_half, color: Colors.orange, size: 20),
+                    ]),
+                    SizedBox(height: 4),
+                    Text("120 reviews"),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            _buildRatingBar(5, 70),
+            _buildRatingBar(4, 20),
+            _buildRatingBar(3, 5),
+            _buildRatingBar(2, 3),
+            _buildRatingBar(1, 2),
+            Divider(height: 30),
+            ...reviews.map((review) => _buildReview(review)).toList(),
           ],
         ),
       ),
     );
   }
+
+
+  Widget _buildRatingBar(int star, int percent) {
+    return Row(
+      children: [
+        Text("$star"),
+        SizedBox(width: 4),
+        Icon(Icons.star, color: Colors.orange, size: 16),
+        SizedBox(width: 4),
+        Expanded(
+          child: LinearProgressIndicator(
+            value: percent / 100,
+            color: Colors.blue,
+            backgroundColor: Colors.grey.shade300,
+            minHeight: 8,
+          ),
+        ),
+        SizedBox(width: 8),
+        Text("$percent%"),
+      ],
+    );
+  }
+
+  Widget _buildReview(Map<String, dynamic> review) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(review['image']),
+            radius: 20,
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(review['name'],
+                    style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(review['time'],
+                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+                SizedBox(height: 8),
+                Row(
+                  children: List.generate(
+                    5,
+                        (index) =>
+                        Icon(Icons.star, color: Colors.orange, size: 16),
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(review['review']),
+                SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(Icons.thumb_up_alt_outlined, size: 18),
+                    SizedBox(width: 4),
+                    Text('${review['likes']}'),
+                    SizedBox(width: 12),
+                    Icon(Icons.thumb_down_alt_outlined, size: 18),
+                    SizedBox(width: 4),
+                    Text('${review['dislikes']}'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
 }
 
 class InfoItem extends StatelessWidget {
@@ -256,7 +433,13 @@ class InfoItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.black54),
+          Container(
+            padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Color(0xffF1F3F3),
+              ),
+              child: Icon(icon, size: 18, color: Color(0xff8B98B4))),
           const SizedBox(width: 12),
           Text(text),
         ],
@@ -273,11 +456,28 @@ class ServiceTypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text(label),
-      avatar: Icon(icon, size: 18),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color(0xff7D7D7D)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 22),
+          const SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              label,
+              style: GoogleFonts.lexend(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+             
+            ),
+          ),
+        ],
+      )
     );
   }
 }

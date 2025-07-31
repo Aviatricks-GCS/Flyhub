@@ -46,7 +46,11 @@ class MyDroneListPage extends StatelessWidget {
         title: Text("My Drone List", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.black),
+        leading: GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+            child: Icon(Icons.arrow_back, color: Colors.black)),
       ),
       backgroundColor: Colors.grey[100],
       body: ListView.builder(

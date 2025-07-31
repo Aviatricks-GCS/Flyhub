@@ -121,10 +121,10 @@ class DroneDetailPage extends StatelessWidget {
                     ),
                   );
                 },
-                icon: const Icon(Icons.shopping_cart),
-                label: const Text(
+                icon:  Icon(Icons.shopping_cart,color: Colors.white,),
+                label:  Text(
                   "ADD TO CART",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16,color: Colors.white),
                 ),
               ),
             ),

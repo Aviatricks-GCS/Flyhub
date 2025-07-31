@@ -121,9 +121,11 @@ class _PilotPageState extends State<PilotPage> with TickerProviderStateMixin {
   }
 
   Widget _buildPilotCard({required String name, required String role, required String image}) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    final double iconSize = screenWidth * 0.04;
     return Container(
       margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -146,7 +148,18 @@ class _PilotPageState extends State<PilotPage> with TickerProviderStateMixin {
                 SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(Icons.star, size: 16, color: Colors.orange),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: List.generate(5, (index) {
+                        String rating="4";
+                        int ratingValue = int.tryParse(rating) ?? 0;
+                        return Icon(
+                          Icons.star,
+                          size: iconSize,
+                          color: index < ratingValue ? Colors.orange : Colors.grey[300],
+                        );
+                      }),
+                    ),
                     SizedBox(width: 4),
                     Text("4.5", style: TextStyle(fontWeight: FontWeight.w600)),
                     SizedBox(width: 6),

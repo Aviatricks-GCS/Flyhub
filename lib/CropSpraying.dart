@@ -186,7 +186,26 @@ class _CropSprayingPageState extends State<CropSprayingPage>
 
                 ],
               ),
-              Spacer(),
+              SizedBox(
+                  width: double.infinity,
+                  height: 30,
+                  child: ElevatedButton(
+                    onPressed: () {
+
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Text("Book Now", style: TextStyle(fontSize: 12,color: Colors.white))]),
+                  )
+              ),
+              /*Spacer(),
               Container(
                 padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                 child: ElevatedButton(
@@ -204,7 +223,7 @@ class _CropSprayingPageState extends State<CropSprayingPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [Text("Book Now", style: TextStyle(fontSize: 12,color: Colors.white))]),
                 ),
-              ),
+              ),*/
             ],
           ),
         ),

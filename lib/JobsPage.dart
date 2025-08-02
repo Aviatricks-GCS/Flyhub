@@ -194,27 +194,36 @@ class JobsPage extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                              children:  [
+                              children: [
                                 Row(
                                   children: [
-                                    Text(job['location']!,style: TextStyle(color: Colors.grey),),
-                                    Text(job['vacancies']!,style: TextStyle(color: Colors.grey),),
+                                    Icon(Icons.location_on_outlined, color: Colors.grey, size: 18),
+                                    SizedBox(width: 4),
+                                    Text(job['location']!, style: TextStyle(color: Colors.grey)),
+                                    SizedBox(width: 16),
+                                    Icon(Icons.group_outlined, color: Colors.grey, size: 18),
+                                    SizedBox(width: 4),
+                                    Text(job['vacancies']!, style: TextStyle(color: Colors.grey)),
                                   ],
                                 ),
+                                SizedBox(height: 6),
                                 Row(
                                   children: [
-                                    Text(job['experience']!,style: TextStyle(color: Colors.grey),),
-                                    Text(
-                                      job['salary']!,style: TextStyle(color: Colors.grey),
-                                    ),
+                                    Icon(Icons.work_outline, color: Colors.grey, size: 18),
+                                    SizedBox(width: 4),
+                                    Text(job['experience']!, style: TextStyle(color: Colors.grey)),
+                                    SizedBox(width: 16),
+                                    Icon(Icons.currency_rupee, color: Colors.grey, size: 18),
+                                    SizedBox(width: 4),
+                                    Text(job['salary']!, style: TextStyle(color: Colors.grey)),
                                   ],
                                 ),
                               ],
                             ),
+
                           ],
                         ),
                         SizedBox(height: 10),

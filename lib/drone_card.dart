@@ -21,8 +21,8 @@ class DroneCard extends StatelessWidget {
     // Dynamically scale sizes
     final double cardWidth = screenWidth * 0.42;
     final double imageHeight = screenWidth * 0.2;
-    final double fontSizeTitle = screenWidth * 0.025;
-    final double fontSizePrice = screenWidth * 0.02;
+    //final double fontSizeTitle = screenWidth * 0.025;
+    //final double fontSizePrice = screenWidth * 0.02;
     final double iconSize = screenWidth * 0.04;
 
     return Card(
@@ -52,7 +52,6 @@ class DroneCard extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: fontSizeTitle,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -62,7 +61,6 @@ class DroneCard extends StatelessWidget {
               price,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: fontSizePrice,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey[700],
               ),

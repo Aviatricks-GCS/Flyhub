@@ -129,7 +129,7 @@ class DroneServicesPage extends StatelessWidget {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.7, // adjust for card height/width
+                childAspectRatio: 0.6, // adjust for card height/width
               ),
               itemBuilder: (context, index) {
                 final drone = drones[index];
@@ -199,23 +199,24 @@ class DroneServicesPage extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text("Insurance ✅", style: TextStyle(fontSize: 12, color: Colors.grey)),
                           Spacer(),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                            child: ElevatedButton(
-                              onPressed: () {
+                          SizedBox(
+                              width: double.infinity,
+                              height: 30,
+                              child: ElevatedButton(
+                                onPressed: () {
 
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.purple,
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.purple,
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
-                              ),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Text("Book Now", style: TextStyle(fontSize: 12,color: Colors.white))]),
-                            ),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [Text("Book Now", style: TextStyle(fontSize: 12,color: Colors.white))]),
+                              )
                           ),
                         ],
                       ),

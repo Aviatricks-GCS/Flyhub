@@ -52,7 +52,7 @@ class JobDetailsScreen extends StatelessWidget {
                     "Drone Pilot / UAV Operator",
                     style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -143,7 +143,7 @@ class JobDetailsScreen extends StatelessWidget {
                 infoRow(Icons.calendar_month, "Age Limit", "25 to 45"),
                 infoRow(Icons.people, "Marital Status", "Both Male & Female"),
                 infoRow(Icons.timelapse, "Experience", "Fresher"),
-                infoRow(Icons.currency_rupee, "Salary", "15000 - 50000\n+ Incentives"),
+                infoRow(Icons.currency_rupee, "Salary", "15000 - 50000 + Incentives"),
                 infoRow(Icons.event_seat, "Vacancies", "33 places"),
               ],
             ),
@@ -250,35 +250,56 @@ class JobDetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(9),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.access_alarm, color: Colors.green),
                         SizedBox(width: 8),
-                        Text("Are you interested in receiving job alerts on WhatsApp?"),
+                        Expanded(
+                          child: Text(
+                            "Are you interested in receiving job alerts on WhatsApp?",
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        OutlinedButton(onPressed: () {},
-                          style: OutlinedButton.styleFrom(foregroundColor: Colors.white,backgroundColor: Colors.white), child: Padding(
-                          padding:  EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: Text("No",style: TextStyle(color: Colors.grey),),
-                        ),),
+                        OutlinedButton(
+                          onPressed: () {},
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.white,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+                            child: Text("No", style: TextStyle(color: Colors.grey)),
+                          ),
+                        ),
                         SizedBox(width: 8),
-                        ElevatedButton(onPressed: () {},
-                          style: OutlinedButton.styleFrom(foregroundColor: Colors.white,backgroundColor: Colors.green), child: Padding(
-                            padding:  EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: Text("Yes",style: TextStyle(color: Colors.white),),
-                        ),),
-
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.green,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+                            child: Text("Yes", style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ),
+              )
+
             ),
 
             SizedBox(height: 40),

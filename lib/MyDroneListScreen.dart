@@ -7,8 +7,7 @@ class MyDroneListPage extends StatelessWidget {
       "name": "Skyx Kisaan",
       "price": "₹500/hour",
       "status": "Pending",
-      "image":
-      "https://i.imgur.com/BoN9kdC.png", // Replace with your image URLs
+      "image": "https://i.imgur.com/BoN9kdC.png",
     },
     {
       "type": "Camera",
@@ -41,16 +40,20 @@ class MyDroneListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final fontScale = screenWidth / 375; // scale factor for smaller devices
+
     return Scaffold(
       appBar: AppBar(
         title: Text("My Drone List", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
           },
-            child: Icon(Icons.arrow_back, color: Colors.black)),
+          child: Icon(Icons.arrow_back, color: Colors.black),
+        ),
       ),
       backgroundColor: Colors.grey[100],
       body: ListView.builder(
@@ -58,6 +61,7 @@ class MyDroneListPage extends StatelessWidget {
         padding: EdgeInsets.all(16),
         itemBuilder: (context, index) {
           final drone = drones[index];
+
           return Container(
             margin: EdgeInsets.only(bottom: 16),
             padding: EdgeInsets.all(14),
@@ -75,7 +79,7 @@ class MyDroneListPage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Text content
+                // Left side content
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +89,7 @@ class MyDroneListPage extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.teal,
                           fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontSize: 12 * fontScale,
                         ),
                       ),
                       SizedBox(height: 6),
@@ -93,7 +97,7 @@ class MyDroneListPage extends StatelessWidget {
                         "Drone : ${drone["name"]}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 14 * fontScale,
                           color: Colors.black87,
                         ),
                       ),
@@ -103,21 +107,27 @@ class MyDroneListPage extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: Colors.teal,
+                          fontSize: 13 * fontScale,
                         ),
                       ),
                       SizedBox(height: 10),
-                      Row(
+
+                      // Wrap row to prevent overflow
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 2,
+                        runSpacing: 8,
                         children: [
                           Text(
-                      "Status : ",
+                            "Status :",
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
+                              fontSize: 12 * fontScale,
                             ),
                           ),
-
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               color: _getStatusColor(drone["status"]),
                               borderRadius: BorderRadius.circular(6),
@@ -127,51 +137,48 @@ class MyDroneListPage extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
+                                fontSize: 12 * fontScale,
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              print("Details for ${drone["name"]}");
-                            },
-                            icon: Icon(Icons.arrow_forward, size: 14),
-                            label: Text(
-                              "View Details",
-                              style: TextStyle(fontSize: 12),
+                          Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurpleAccent,
+                              borderRadius: BorderRadius.circular(6),
                             ),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.deepPurpleAccent),
-                              foregroundColor: Colors.deepPurpleAccent,
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                "View Details",
+                                style: TextStyle(
+                                  color: Colors.deepPurpleAccent,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12 * fontScale,
+                                ),
                               ),
                             ),
                           ),
+
                         ],
                       ),
                     ],
                   ),
                 ),
+
                 // Image + delete icon
                 Stack(
                   children: [
-                    /*ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        drone["image"],
-                        width: 90,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    ),*/
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       child: Image.asset(
-                        'assets/images/MaskGroup34@2x.png', // Replace with your actual image asset
-                        height: 220,
-                        width: 200,
+                        'assets/images/MaskGroup34@2x.png',
+                        width: screenWidth * 0.22,
+                        height: screenWidth * 0.22,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -179,11 +186,12 @@ class MyDroneListPage extends StatelessWidget {
                       top: 4,
                       right: 4,
                       child: Container(
+                        padding: EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color: Colors.black54,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.delete, size: 25, color: Colors.white),
+                        child: Icon(Icons.delete, size: 20, color: Colors.white),
                       ),
                     ),
                   ],

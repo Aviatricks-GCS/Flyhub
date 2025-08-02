@@ -91,6 +91,8 @@ class _MyCartPageState extends State<MyCartPage> {
   }
 
   Widget _buildCartItem(BuildContext context, Map<String, dynamic> item) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       padding: EdgeInsets.all(12),
@@ -102,13 +104,19 @@ class _MyCartPageState extends State<MyCartPage> {
         children: [
           Row(
             children: [
-              Image.asset(item["image"], width: 200, height: 200, fit: BoxFit.contain),
+              Image.asset(
+                item["image"],
+                width: screenWidth * 0.35,
+                height: screenWidth * 0.35,
+                fit: BoxFit.contain,
+              ),
               SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(item["name"], style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(Icons.star, color: Colors.orange, size: 16),
@@ -117,6 +125,7 @@ class _MyCartPageState extends State<MyCartPage> {
                         Text(" (156)", style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
+                    SizedBox(height: 4),
                     Text("₹${item["price"]}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     Text("🛩 Drone", style: TextStyle(color: Colors.blue)),
                   ],
@@ -128,6 +137,11 @@ class _MyCartPageState extends State<MyCartPage> {
           Row(
             children: [
               _buildQtySelector(),
+            ],
+          ),
+          Row(
+            children: [
+
               SizedBox(width: 10),
               Expanded(
                 child: Text("Delivery by Jul 7, Mon", style: TextStyle(color: Colors.grey)),
@@ -138,7 +152,7 @@ class _MyCartPageState extends State<MyCartPage> {
           ),
           SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildCartButton(Icons.delete_outline, "Remove"),
               _buildCartButton(Icons.bookmark_border, "Save for later"),

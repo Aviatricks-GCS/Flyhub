@@ -85,10 +85,13 @@ class _MarketPageState extends State<MarketPage>
 
     // Dynamic scaling factors
     double imageHeight = screenWidth * 0.25; // roughly 90 on ~360dp screens
-    double titleFontSize = screenWidth * 0.02; // ~14-15sp
+    //double titleFontSize = screenWidth * 0.02; // ~14-15sp
     double subtitleFontSize = screenWidth * 0.02; // ~10-11sp
     double ratingIconSize = screenWidth * 0.035; // ~12-14
     double padding = screenWidth * 0.025; // ~8-10
+
+
+    final double iconSize = screenWidth * 0.04;
 
     return GestureDetector(
       onTap: () {
@@ -132,35 +135,42 @@ class _MarketPageState extends State<MarketPage>
               ),
 
               // Details
-              SizedBox(height: padding),
               Text(
                 drone['model'] ?? 'Drone Name',
                 style: GoogleFonts.lexend(
                   fontWeight: FontWeight.bold,
-                  fontSize: titleFontSize,
                 ),
               ),
               SizedBox(height: 2),
               Text(
                 drone['specs'] ?? 'Specifications',
                 style: GoogleFonts.lexend(
-                  fontSize: subtitleFontSize,
                   color: Colors.grey[700],
                 ),
               ),
               SizedBox(height: 4),
               Row(
                 children: [
-                  Icon(Icons.star, size: ratingIconSize, color: Colors.orange),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: List.generate(5, (index) {
+                      String rating="4";
+                      int ratingValue = int.tryParse(rating) ?? 0;
+                      return Icon(
+                        Icons.star,
+                        size: iconSize,
+                        color: index < ratingValue ? Colors.orange : Colors.grey[300],
+                      );
+                    }),
+                  ),
                   SizedBox(width: 2),
                   Text(
                     "4.5",
-                    style: TextStyle(fontSize: subtitleFontSize),
                   ),
                   SizedBox(width: 4),
                   Text(
                     "(686)",
-                    style: TextStyle(fontSize: subtitleFontSize, color: Colors.grey),
+                    style: TextStyle( color: Colors.grey),
                   ),
                 ],
               ),
@@ -169,7 +179,6 @@ class _MarketPageState extends State<MarketPage>
                 drone['price'] != "" ? "₹${drone['price']}" : "",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: titleFontSize,
                 ),
               ),
             ],
